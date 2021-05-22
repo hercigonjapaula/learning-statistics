@@ -1,8 +1,144 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model DatasetViewModel
+<style>
+    .vertical-menu {     
+        border: solid;
+        border-color: lightgray;      
+        border-radius: 25px;
+        display: block;   
+        padding: 24px;
+        margin: 16px;        
+    }
+    .data {
+        float: left;
+        margin: 16px;
+        margin-left: 60px;
+    }
+    .summary_plot_rcode {
+        float: left;
+        margin: 16px;
+        margin-left: 60px;
+    }
+    textarea {
+        padding: 10px;
+        line-height: 1.5;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 1px 1px 1px #999;
+    }
+</style>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('a').click(function () {
+            var id = $(this).attr("id");
+            var summary = document.getElementById("summary");
+            var plot = document.getElementById("plot");
+            var rcode = document.getElementById("rcode");
+            if (id.localeCompare("1") == 0) {                
+                summary.style.display = "block";
+                plot.style.display = "none";
+                rcode.style.display = "none";
+            } else if (id.localeCompare("2") == 0) {                
+                summary.style.display = "none";
+                plot.style.display = "block";
+                rcode.style.display = "none";
+            } else if (id.localeCompare("3") == 0) {                
+                summary.style.display = "none";
+                plot.style.display = "none";
+                rcode.style.display = "block";
+            }
+
+            //$("#result").html("");            
+        });
+    });
+</script>
+
+<div>
+    <div style="float:left;">
+        <div class="vertical-menu">
+            <form asp-controller="Home" asp-action="ChangeDataset">
+                <div class="form-group">
+                    <label class="control-label">Skup podataka</label>
+                    <select asp-for="Dataset" asp-items="@Model.Datasets" class="form-control"></select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
+            </form>
+            <br />     
+            <form asp-controller="Home" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="control-label" style="display: block">Vlastiti podatci</label>
+                    <input type="file" name="file" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Učitaj</button>
+            </form>
+        </div>
+        <div class="vertical-menu">
+            <form asp-controller="Home" asp-action="ChangeVariableAndPlot">
+                <div class="form-group">
+                    <label class="control-label">Varijabla</label>
+                    <select asp-for="Variable" asp-items="@Model.Variables" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Grafički prikaz</label>
+                    <select asp-for="Plot" asp-items="@Model.Plots" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="data">
+            <table class="table table-hover" id="dataset-table">
+                <tbody style="background-color:white">
+                    @{
+                        foreach (string line in ViewBag.Dataset)
+                        {
+                            <tr>
+                                @{
+                                    foreach (string cell in line.Split(","))
+                                    {
+                                        <td>
+                                            <center>@cell</center>
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+    </div>
+    <div class="summary_plot_rcode">  
+        <a id="2" class="btn btn-light">Graf</a>
+        <a id="1" class="btn btn-light">Deskriptivna statistika</a>        
+        <a id="3" class="btn btn-light">R kôd</a>
+        <div id="summary" style="display: none">
+            <br />
+            <p>    <b>Minimum</b> = @ViewBag.Min</p>
+            <p>    <b>1. kvartil</b> = @ViewBag.FirstQ</p>
+            <p>    <b>Aritmetička sredina</b> = @ViewBag.Mean</p>
+            <p>    <b>Medijan</b> = @ViewBag.Median</p>
+            <p>    <b>3. kvartil</b> = @ViewBag.ThirdQ</p>
+            <p>    <b>Maksimum</b> = @ViewBag.Max</p>
+        </div>
+        <div id="plot" style="display: block">
+            <br />
+            <img src="~/plot.png" />
+        </div>
+        <div id="rcode" style="display: none">
+            <br />
+            <textarea rows="20" cols="70">
+            @{           
+                foreach (string line in ViewBag.RCode)
+                {
+                    @line
+                    @System.Environment.NewLine                              
+                }
+            }
+            </textarea>
+        </div>
+    </div>
 </div>
+
