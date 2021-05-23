@@ -1,61 +1,63 @@
 ﻿@model DatasetViewModel
 <style>
-    .vertical-menu {     
+    .vertical-menu {
         border: solid;
-        border-color: lightgray;      
+        border-color: lightgray;
         border-radius: 25px;
-        display: block;   
+        display: block;
         padding: 24px;
-        margin: 16px;        
+        margin: 16px;
     }
-    .data {
+
+    .data_plot_summary_rcode {
         float: left;
         margin: 16px;
         margin-left: 60px;
-    }
-    .summary_plot_rcode {
-        float: left;
-        margin: 16px;
-        margin-left: 60px;
-    }
-    textarea {
-        padding: 10px;
-        line-height: 1.5;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-shadow: 1px 1px 1px #999;
+        width: 70%;
+        height: 100%;
     }
 </style>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/lib/codemirror-5.61.1/lib/codemirror.js"></script>
+<link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/lib/codemirror.css">
+<link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/theme/pastel-on-dark.css">
+<script type="text/javascript" src="~/lib/codemirror-5.61.1/mode/r/r.js"></script>
 <script type="text/javascript" language="javascript">
-    $(document).ready(function () {
+    $(document).ready(function () {     
+        var code = $("#rcode-textarea")[0];     
+        var editor = CodeMirror.fromTextArea(code, {
+            lineNumbers: true,
+            mode: "r",
+            theme: "pastel-on-dark"            
+        });
+        editor.setSize("100%", "100%"); 
+        var cm = $('.CodeMirror')[0].CodeMirror;
+        $(cm.getWrapperElement()).hide();
         $('a').click(function () {
             var id = $(this).attr("id");
-            var summary = document.getElementById("summary");
-            var plot = document.getElementById("plot");
-            var rcode = document.getElementById("rcode");
-            if (id.localeCompare("1") == 0) {                
-                summary.style.display = "block";
-                plot.style.display = "none";
-                rcode.style.display = "none";
-            } else if (id.localeCompare("2") == 0) {                
-                summary.style.display = "none";
-                plot.style.display = "block";
-                rcode.style.display = "none";
-            } else if (id.localeCompare("3") == 0) {                
-                summary.style.display = "none";
-                plot.style.display = "none";
-                rcode.style.display = "block";
+            var data = document.getElementById("data");
+            var plot_summary = document.getElementById("plot_summary");
+            var cm = $('.CodeMirror')[0].CodeMirror;
+            if (id.localeCompare("1") == 0) {
+                data.style.display = "block";
+                plot_summary.style.display = "none";
+                $(cm.getWrapperElement()).hide();
+            } else if (id.localeCompare("2") == 0) {
+                data.style.display = "none";
+                plot_summary.style.display = "block";  
+                $(cm.getWrapperElement()).hide();
+            } else if (id.localeCompare("3") == 0) {
+                data.style.display = "none";
+                plot_summary.style.display = "none";             
+                $(cm.getWrapperElement()).show();
             }
-
-            //$("#result").html("");            
         });
     });
 </script>
 
-<div>
-    <div style="float:left;">
+<div style="width: 100%">
+    <div style="float: left;width: 20%">
         <div class="vertical-menu">
             <form asp-controller="Home" asp-action="ChangeDataset">
                 <div class="form-group">
@@ -64,7 +66,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
             </form>
-            <br />     
+            <br />
             <form asp-controller="Home" asp-action="UploadFile" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="control-label" style="display: block">Vlastiti podatci</label>
@@ -89,7 +91,11 @@
             </form>
         </div>
     </div>
-    <div class="data">
+    <div class="data_plot_summary_rcode">
+        <a id="1" class="btn btn-light">Skup podataka</a>
+        <a id="2" class="btn btn-light">Graf i deskriptivna statistika</a>
+        <a id="3" class="btn btn-light">R kôd</a>
+        <div id="data" class="data" style="display: block">
             <table class="table table-hover" id="dataset-table">
                 <tbody style="background-color:white">
                     @{
@@ -109,27 +115,23 @@
                     }
                 </tbody>
             </table>
-    </div>
-    <div class="summary_plot_rcode">  
-        <a id="2" class="btn btn-light">Graf</a>
-        <a id="1" class="btn btn-light">Deskriptivna statistika</a>        
-        <a id="3" class="btn btn-light">R kôd</a>
-        <div id="summary" style="display: none">
-            <br />
-            <p>    <b>Minimum</b> = @ViewBag.Min</p>
-            <p>    <b>1. kvartil</b> = @ViewBag.FirstQ</p>
-            <p>    <b>Aritmetička sredina</b> = @ViewBag.Mean</p>
-            <p>    <b>Medijan</b> = @ViewBag.Median</p>
-            <p>    <b>3. kvartil</b> = @ViewBag.ThirdQ</p>
-            <p>    <b>Maksimum</b> = @ViewBag.Max</p>
         </div>
-        <div id="plot" style="display: block">
-            <br />
-            <img src="~/plot.png" />
-        </div>
-        <div id="rcode" style="display: none">
-            <br />
-            <textarea rows="20" cols="70">
+        <div id="plot_summary" class="plot_summary" style="display: none">
+            <div id="plot" style="float: left">
+                <br />
+                <img src="~/plot.png" />
+            </div>
+            <div id="summary" style="float: left">
+                <br />
+                <p>    <b>Minimum</b> = @ViewBag.Min</p>
+                <p>    <b>1. kvartil</b> = @ViewBag.FirstQ</p>
+                <p>    <b>Aritmetička sredina</b> = @ViewBag.Mean</p>
+                <p>    <b>Medijan</b> = @ViewBag.Median</p>
+                <p>    <b>3. kvartil</b> = @ViewBag.ThirdQ</p>
+                <p>    <b>Maksimum</b> = @ViewBag.Max</p>
+            </div>
+        </div>      
+        <textarea id="rcode-textarea" style="display: none">
             @{           
                 foreach (string line in ViewBag.RCode)
                 {
@@ -137,8 +139,6 @@
                     @System.Environment.NewLine                              
                 }
             }
-            </textarea>
-        </div>
+        </textarea>        
     </div>
 </div>
-
