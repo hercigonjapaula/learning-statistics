@@ -13,9 +13,4 @@
     <PackageReference Include="R.NET" Version="1.9.0" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="UploadedFiles\" />
-  </ItemGroup>
-
 </Project>
