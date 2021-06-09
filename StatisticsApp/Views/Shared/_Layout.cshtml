@@ -16,6 +16,11 @@
               integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE="/>
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;            
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -29,10 +34,27 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Osnove statistike</a>                            
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Osnove statistike</a>
                         </li>
-                        <li class="nav-item">                         
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TestingHypothesis" asp-action="Index">Testiranje hipoteza</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark">Testiranje hipoteza</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" style="font-size: smaller; color: gray;">Metrički podaci</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="MetricDataSingle" asp-action="Index">Jedan skup podataka</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MetricDataCompare" asp-action="Index">Dva skupa podataka</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MetricDataPaired" asp-action="Index">Upareni podaci</a></li>
+                                <li class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" style="font-size: smaller; color: gray;">Kategorijski podaci</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="CategoricalDataSingleProportion" asp-action="Index">Jedna proporcija</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="CategoricalDataCompareProportions" asp-action="Index">Dvije proporcije</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="CategoricalDataIndependence" asp-action="Index">Test nezavisnosti</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="LinearRegression" asp-action="Index">Linearna regresija</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="NonparametricTests" asp-action="Index">Neparametarski testovi</a>
                         </li>
                     </ul>
                 </div>
@@ -46,11 +68,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - StatisticsApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

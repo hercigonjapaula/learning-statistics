@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace StatisticsApp.Controllers
 {
-    public class TestingHypothesisController : Controller
+    public class CategoricalDataCompareProportionsController : Controller
     {
         public IActionResult Index()
         {

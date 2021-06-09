@@ -1,57 +1,86 @@
 ﻿@model DatasetViewModel
-<style>
-    .vertical-menu {
-        border: solid;
-        border-color: lightgray;
-        border-radius: 25px;
-        display: block;
-        padding: 24px;
-        margin: 16px;
-    }
-
-    .data_plot_summary_rcode {
-        float: left;
-        margin: 16px;
-        margin-left: 60px;
-        width: 70%;
-        height: 100%;
-    }
-</style>
-
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/lib/codemirror-5.61.1/lib/codemirror.js"></script>
 <link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/lib/codemirror.css">
 <link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/theme/pastel-on-dark.css">
 <script type="text/javascript" src="~/lib/codemirror-5.61.1/mode/r/r.js"></script>
+<script src="~/lib/plotly-latest.min.js"></script>
 <script type="text/javascript" language="javascript">
-    $(document).ready(function () {     
-        var code = $("#rcode-textarea")[0];     
+    $(document).ready(function () {
+        var code = $("#rcode-textarea")[0];
         var editor = CodeMirror.fromTextArea(code, {
             lineNumbers: true,
             mode: "r",
-            theme: "pastel-on-dark"            
+            theme: "pastel-on-dark"
         });
-        editor.setSize("100%", "100%"); 
-        var cm = $('.CodeMirror')[0].CodeMirror;
-        $(cm.getWrapperElement()).hide();
+        editor.setSize("100%", "100%");
+        var cm = $('.CodeMirror')[0].CodeMirror; 
+        var plots_rscript = document.getElementById("plots-rscript");
+        @if (ViewBag.RunRCode)
+        {
+            <text>$(cm.getWrapperElement()).show();
+                  plots_rscript.style.display = "block";
+            </text>
+        }
+        else
+        {
+            <text>$(cm.getWrapperElement()).hide();</text>
+        }
         $('a').click(function () {
             var id = $(this).attr("id");
+            var basic_plot = document.getElementById("basic_plot");
             var data = document.getElementById("data");
             var plot_summary = document.getElementById("plot_summary");
+            var save_rscript_btn = document.getElementById("save-rscript");
+            var run_rscript_btn = document.getElementById("run-rscript");
+            var plots_rscript = document.getElementById("plots-rscript");
             var cm = $('.CodeMirror')[0].CodeMirror;
-            if (id.localeCompare("1") == 0) {
+            if (id.localeCompare("0") == 0) {
+                basic_plot.style.display = "block";
+                data.style.display = "none";
+                plot_summary.style.display = "none";
+                save_rscript_btn.style.display = "none";
+                run_rscript_btn.style.display = "none";
+                plots_rscript.style.display = "none";
+                $(cm.getWrapperElement()).hide();
+            } else if (id.localeCompare("1") == 0) {
+                basic_plot.style.display = "none";
                 data.style.display = "block";
                 plot_summary.style.display = "none";
+                save_rscript_btn.style.display = "none";
+                run_rscript_btn.style.display = "none";
+                plots_rscript.style.display = "none";
                 $(cm.getWrapperElement()).hide();
             } else if (id.localeCompare("2") == 0) {
+                basic_plot.style.display = "none";
                 data.style.display = "none";
-                plot_summary.style.display = "block";  
+                plot_summary.style.display = "block";
+                save_rscript_btn.style.display = "none";
+                run_rscript_btn.style.display = "none";
+                plots_rscript.style.display = "none";
                 $(cm.getWrapperElement()).hide();
             } else if (id.localeCompare("3") == 0) {
+                basic_plot.style.display = "none";
                 data.style.display = "none";
-                plot_summary.style.display = "none";             
+                plot_summary.style.display = "none";
+                save_rscript_btn.style.display = "block";
+                run_rscript_btn.style.display = "block";
+                plots_rscript.style.display = "block";
                 $(cm.getWrapperElement()).show();
             }
+        });
+        $("#save-rscript").click(function () {
+            var code = editor.getValue();
+            var codeAsBlob = new Blob([code], {
+                type: "text"
+            });
+            var fileName = "script.r";
+
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileName;
+            downloadLink.innerHTML = "Download File";
+            downloadLink.href = window.webkitURL.createObjectURL(codeAsBlob);
+            downloadLink.click();
         });
     });
 </script>
@@ -92,10 +121,23 @@
         </div>
     </div>
     <div class="data_plot_summary_rcode">
+        <a id="0" class="btn btn-light">Osnovne vizualizacije</a>
         <a id="1" class="btn btn-light">Skup podataka</a>
         <a id="2" class="btn btn-light">Graf i deskriptivna statistika</a>
         <a id="3" class="btn btn-light">R kôd</a>
-        <div id="data" class="data" style="display: block">
+        <div id="basic_plot" class="@(ViewBag.RunRCode ? "hidden" : "visible")">
+            <br />
+            @{
+                if (!(ViewBag.BasicPlots is null))
+                {
+                    foreach (var image in (IEnumerable<string>)ViewBag.BasicPlots)
+                    {
+                        <img src="@Url.Content(image)" />
+                    }
+                }
+            }
+        </div>
+        <div id="data" class="data" style="display: none">
             <table class="table table-hover" id="dataset-table">
                 <tbody style="background-color:white">
                     @{
@@ -130,15 +172,31 @@
                 <p>    <b>3. kvartil</b> = @ViewBag.ThirdQ</p>
                 <p>    <b>Maksimum</b> = @ViewBag.Max</p>
             </div>
-        </div>      
-        <textarea id="rcode-textarea" style="display: none">
-            @{           
-                foreach (string line in ViewBag.RCode)
+        </div>
+        <br />
+        <div id="plots-rscript" style="display: none">
+            @{
+                if (!(ViewBag.Images is null))
                 {
-                    @line
-                    @System.Environment.NewLine                              
+                    foreach (var image in (IEnumerable<string>)ViewBag.Images)
+                    {
+                        <img src="@Url.Content(image)" />
+                    }
                 }
             }
-        </textarea>        
+        </div>
+        <button id="save-rscript" class="btn btn-primary btn-success @(ViewBag.RunRCode ? "visible" : "hidden")" style="float: right;">Spremi skriptu</button>
+        <form asp-controller="Home" asp-action="RunRCode">
+            <button id="run-rscript" type="submit" class="btn btn-primary btn-success @(ViewBag.RunRCode ? "visible" : "hidden")" style="float: right;">Pokreni</button>
+            <textarea id="rcode-textarea" name="rcode">            
+            @{           
+            foreach (string line in ViewBag.RCode)
+            {
+                @line
+                @System.Environment.NewLine                              
+            }
+            }
+        </textarea>
+        </form>
     </div>
 </div>

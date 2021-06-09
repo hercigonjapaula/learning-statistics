@@ -12,9 +12,10 @@ namespace StatisticsApp.Controllers
 {
     public class HomeController : Controller
     {
+        public static string WwwrootPath = "C:/Users/Paula/Desktop/FER-10.semestar/" +
+                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/";
         public static CSharpR CSharpR = new CSharpR("C:/Program Files/R/R-4.0.5/bin/x64/Rscript.exe");
-        public static string[] Lines = System.IO.File.ReadAllLines("C:/Users/Paula/Desktop/FER-10.semestar/" +
-                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/iris.csv");
+        public static string[] Lines = System.IO.File.ReadAllLines(WwwrootPath + "iris.csv");
         public static List<SelectListItem> Datasets = new List<SelectListItem>()
         {
                     new SelectListItem() { Text="iris", Value="iris" },
@@ -30,7 +31,8 @@ namespace StatisticsApp.Controllers
                     new SelectListItem() { Text="box plot", Value="boxplot" },
                     new SelectListItem() { Text="scatter plot", Value="scatterplot" }
         };
-        public static string[] RCode = System.IO.File.ReadAllLines("C:/Users/Paula/Desktop/FER-10.semestar/lesson.r");
+        public static string RScriptPath = "C:/Users/Paula/Desktop/FER-10.semestar/basics.r";
+        public static string[] RCode = System.IO.File.ReadAllLines(RScriptPath);
 
 
         public IActionResult Index()
@@ -52,14 +54,20 @@ namespace StatisticsApp.Controllers
                 Plots = Plots
             };
             Dataset = "iris";
-            string outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/lesson.r",
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "basic_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
+            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/summary.txt");
+                WwwrootPath + "summary.txt");
             string[] summary = lines[1].Trim().Split("   ");
             ViewBag.Min = summary[0];
             ViewBag.FirstQ = summary[1];
@@ -69,15 +77,19 @@ namespace StatisticsApp.Controllers
             ViewBag.Max = summary[5];
             ViewBag.Dataset = Lines;          
             ViewBag.RCode = RCode;
+            ViewBag.RunRCode = false;
+            ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
+                            .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));
+            TempData["dataset_name"] = Dataset;
+            TempData.Keep();
             return View(datasetViewModel);
         }
   
         [HttpPost]
         public IActionResult ChangeDataset(DatasetViewModel datasetViewModel)
-        {
+        {            
             Dataset = datasetViewModel.Dataset;
-            Lines = System.IO.File.ReadAllLines("C:/Users/Paula/Desktop/FER-10.semestar/" +
-                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/" 
+            Lines = System.IO.File.ReadAllLines(WwwrootPath  
                     + datasetViewModel.Dataset + ".csv");
             Variables = new List<SelectListItem>();
             int counter = 1;
@@ -91,14 +103,20 @@ namespace StatisticsApp.Controllers
             datasetViewModel.Variables = Variables;
             datasetViewModel.Plots = Plots;
             datasetViewModel.Plot = Plots[0].Value;
-            string outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/lesson.r",
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "basic_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
+            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/summary.txt");
+                WwwrootPath + "summary.txt");
             string[] summary = lines[1].Trim().Split("   ");
             ViewBag.Min = summary[0];
             ViewBag.FirstQ = summary[1];
@@ -108,6 +126,11 @@ namespace StatisticsApp.Controllers
             ViewBag.Max = summary[5];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
+            ViewBag.RunRCode = false;
+            ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
+                .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));
+            TempData["dataset_name"] = Dataset;
+            TempData.Keep();
             return View("Index", datasetViewModel);
         }
 
@@ -117,15 +140,21 @@ namespace StatisticsApp.Controllers
             datasetViewModel.Datasets = Datasets;
             datasetViewModel.Dataset = Dataset;
             datasetViewModel.Variables = Variables;
-            datasetViewModel.Plots = Plots;            
-            string outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/lesson.r",
+            datasetViewModel.Plots = Plots;
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "basic_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot }, 
                 out string standardError);
-            outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
+            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/summary.txt");
+                WwwrootPath + "summary.txt");
             string[] summary = lines[1].Trim().Split("   ");
             ViewBag.Min = summary[0];
             ViewBag.FirstQ = summary[1];
@@ -135,6 +164,9 @@ namespace StatisticsApp.Controllers
             ViewBag.Max = summary[5];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
+            ViewBag.RunRCode = false;
+            ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
+                .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));
             return View("Index", datasetViewModel);
         }
 
@@ -145,15 +177,13 @@ namespace StatisticsApp.Controllers
             {
                 return Content("File not selected");
             }
-            var path = Path.Combine("C:/Users/Paula/Desktop/FER-10.semestar/" +
-                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/" + 
+            var path = Path.Combine(WwwrootPath + 
                     file.FileName);
             using (var stream = new FileStream(path, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
-            Lines = System.IO.File.ReadAllLines("C:/Users/Paula/Desktop/FER-10.semestar/" +
-                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/"
+            Lines = System.IO.File.ReadAllLines(WwwrootPath
                     + file.FileName);
             Variables = new List<SelectListItem>();
             int counter = 1;
@@ -170,17 +200,22 @@ namespace StatisticsApp.Controllers
                 Plot = Plots[0].Value,
                 Plots = Plots
             };
-            Dataset = "C:/Users/Paula/Desktop/FER-10.semestar/" +
-                    "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/" +
-                    file.FileName;            
-            string outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/lesson.r",
+            Dataset = WwwrootPath +
+                    file.FileName;
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "basic_plots");
+            foreach (FileInfo f in directoryInfo.EnumerateFiles())
+            {
+                f.Delete();
+            }
+            string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            outputText = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
+            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
                 out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/summary.txt");
+                WwwrootPath + "summary.txt");
             string[] summary = lines[1].Trim().Split("   ");
             ViewBag.Min = summary[0];
             ViewBag.FirstQ = summary[1];
@@ -190,21 +225,55 @@ namespace StatisticsApp.Controllers
             ViewBag.Max = summary[5];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
+            ViewBag.RunRCode = false;
+            ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
+                .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));
+            TempData["dataset_name"] = file.FileName.Replace(".csv", "");
+            TempData.Keep();
             return View("Index", datasetViewModel);
         }
 
-        public ActionResult LoadPartialView(int partialNumber)
+        [HttpPost]
+        public IActionResult RunRCode (IFormCollection formFields)
         {
-            ViewBag.RCode = RCode;
-            switch (partialNumber)
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "rcode_plots");
+            foreach(FileInfo file in directoryInfo.EnumerateFiles())
             {
-                case 1:
-                    return PartialView("_SummaryPartial");
-                case 2:
-                    return PartialView("_PlotPartial");
-                default:                    
-                    return PartialView("_RCodePartial", new { RCode });
+                file.Delete();
             }
+            string rcode = formFields["rcode"];
+            string path = WwwrootPath + "code.r";
+            System.IO.File.WriteAllText(path, rcode);
+            DatasetViewModel datasetViewModel = new DatasetViewModel
+            {
+                Dataset = Dataset,
+                Datasets = Datasets,
+                Variable = Variables[0].Value,
+                Variables = Variables,
+                Plot = Plots[0].Value,
+                Plots = Plots
+            };
+            CSharpR.ExecuteRScript(path,
+                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
+                out string stdError);
+            ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "rcode_plots")
+                             .Select(fn => "~/rcode_plots/" + Path.GetFileName(fn));
+            string[] lines = System.IO.File.ReadAllLines(
+                WwwrootPath + "summary.txt");
+            string[] summary = lines[1].Trim().Split("   ");
+            ViewBag.Min = summary[0];
+            ViewBag.FirstQ = summary[1];
+            ViewBag.Median = summary[2];
+            ViewBag.Mean = summary[3];
+            ViewBag.ThirdQ = summary[4];
+            ViewBag.Max = summary[5];
+            ViewBag.Dataset = Lines;
+            ViewBag.RCode = RCode;
+            ViewBag.RunRCode = true;
+            ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
+                .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));
+            return View("Index", datasetViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

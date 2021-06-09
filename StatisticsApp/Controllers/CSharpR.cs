@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace StatisticsApp.Controllers
@@ -12,26 +13,32 @@ namespace StatisticsApp.Controllers
             RExeFile = rExeFile;
         }
 
-        public string ExecuteRScript(string RScriptFile, string[] args,
+        public string[] ExecuteRScript(string RScriptFile, string[] args,
             out string standardError)
         {
+            List<string> output = new List<string>();
+            string[] outputLines = new string[0];            
             string outputText = string.Empty;
             standardError = string.Empty;
             try
             {
                 using (Process process = new Process())
-                {
+                {                    
                     process.StartInfo = new ProcessStartInfo(RExeFile)
                     {
-                        Arguments = string.Format("{0} {1} {2} {3}", RScriptFile, args[0], args[1], args[2]),
+                        Arguments = string.Format("{0} {1}", RScriptFile, string.Join(" ", args)),
                         UseShellExecute = false,
+                        RedirectStandardInput = true,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        CreateNoWindow = true
+                        CreateNoWindow = true                        
                     };
                     process.Start();
-                    outputText = process.StandardOutput.ReadToEnd();
-                    outputText = outputText.Replace(Environment.NewLine, string.Empty);
+                    while (!process.StandardOutput.EndOfStream)
+                    {
+                        output.Add(process.StandardOutput.ReadLine());
+                    }
+                    outputLines = output.ToArray();
                     standardError = process.StandardError.ReadToEnd();
                     process.WaitForExit();
                 }
@@ -40,7 +47,7 @@ namespace StatisticsApp.Controllers
             {
                 string exceptionMessage = ex.Message;
             }
-            return outputText;
+            return outputLines;
         }
     }
 }

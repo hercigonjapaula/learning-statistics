@@ -13,4 +13,11 @@
     <PackageReference Include="R.NET" Version="1.9.0" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\basic_plots\" />
+    <Folder Include="wwwroot\test_plots\" />
+    <Folder Include="wwwroot\rcode_plots\" />
+  </ItemGroup>
+
 </Project>

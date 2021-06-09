@@ -1,6 +1,46 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.CodeMirror,
+.CodeMirror-scroll {
+    max-height: 440px;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+.vertical-menu {
+    border: solid;
+    border-color: lightgray;
+    border-radius: 25px;
+    display: block;
+    padding: 24px;
+    margin: 16px;
+}
+
+.rcode-result {
+    border: groove;
+    border-color: lightgray;
+    border-radius: 25px;
+    padding: 18px;
+    margin: 8px;
+    font-family: sans-serif;
+    width: 60%;
+}
+
+.data_plot_summary_rcode {
+    float: left;
+    margin: 16px;
+    margin-left: 60px;
+    width: 70%;
+    height: 100%;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
