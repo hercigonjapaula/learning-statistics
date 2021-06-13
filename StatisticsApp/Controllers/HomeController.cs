@@ -14,6 +14,8 @@ namespace StatisticsApp.Controllers
     {
         public static string WwwrootPath = "C:/Users/Paula/Desktop/FER-10.semestar/" +
                     "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/";
+        public static string PlotsPath = "C:/Users/Paula/Desktop/FER-10.semestar/" +
+            "StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/rcode_plots";
         public static CSharpR CSharpR = new CSharpR("C:/Program Files/R/R-4.0.5/bin/x64/Rscript.exe");
         public static string[] Lines = System.IO.File.ReadAllLines(WwwrootPath + "iris.csv");
         public static List<SelectListItem> Datasets = new List<SelectListItem>()
@@ -61,7 +63,8 @@ namespace StatisticsApp.Controllers
                 file.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
+                new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
+                    datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
             output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
@@ -110,7 +113,8 @@ namespace StatisticsApp.Controllers
                 file.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
+                new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
+                    datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
             output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
@@ -148,7 +152,8 @@ namespace StatisticsApp.Controllers
                 file.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot }, 
+                new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
+                    datasetViewModel.Variable, datasetViewModel.Plot }, 
                 out string standardError);
             output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
@@ -209,7 +214,8 @@ namespace StatisticsApp.Controllers
                 f.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
+                new string[] { WwwrootPath, PlotsPath, Dataset,
+                    datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
             output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
                 new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
@@ -255,7 +261,8 @@ namespace StatisticsApp.Controllers
                 Plots = Plots
             };
             CSharpR.ExecuteRScript(path,
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
+                new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
+                    datasetViewModel.Variable, datasetViewModel.Plot },
                 out string stdError);
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "rcode_plots")
                              .Select(fn => "~/rcode_plots/" + Path.GetFileName(fn));

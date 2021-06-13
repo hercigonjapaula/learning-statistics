@@ -4,22 +4,23 @@ library(ggplot2)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
 pdf(NULL)
-path = "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/"
+path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[1]),sep=";",header = TRUE)
-variable1 <- as.numeric(args[2])
-variable2 <- as.numeric(args[3])
-level1 <- as.character(args[4])
-level2 <- as.character(args[5])
-alternative.hypothesis <- as.character(args[6])
+data <- read.table(as.character(args[2]),sep=";",header = TRUE)
+variable1 <- as.numeric(args[3])
+variable2 <- as.numeric(args[4])
+level1 <- as.character(args[5])
+level21 <- as.character(args[6])
+level22 <- as.character(args[7])
+alternative.hypothesis <- as.character(args[8])
 
 ## Test o dvije proporcije
 # broj eksperimenata iz oba uzorka
-n = c(length(data[,variable1][data[,variable2] == level2]), length(df$default[df$gender=="m"]))
+n = c(length(data[,variable1][data[,variable2] == level21]), length(data[,variable1][data[,variable2] == level22]))
 
 # broj uspjeha iz oba uzorka
-x = c(length(which(df$default[df$gender=="f"]=="delinquent")),length(which(df$default[df$gender=="m"]=="delinquent")))
+x = c(length(which(data[,variable1][data[,variable2] == level21] == level1)), length(data[,variable1][data[,variable2] == level22] == level1))
 
 # test o dvije proporcije (hi-kvadrat umjesto z-testa) - bez tzv. Yatesove korekcije
-prop.test(x,n,alternative="t",correct="FALSE")
+prop.test(x, n, alternative = alternative.hypothesis, correct="FALSE")

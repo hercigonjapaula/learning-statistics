@@ -1,6 +1,7 @@
 library(datasets)
 library(graphics)
 library(ggplot2)
+library(stats)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
 pdf(NULL)
@@ -22,9 +23,9 @@ dev.off()
 switch(test,
        "mean" = t.test(data1, data2, 
                        alternative = alternative.hypothesis,
-                       conf.level = confidence.interval,
+                       conf.level = 0.95,
                        var.equal = TRUE),
        "var" = var.test(data1, data2, 
                         alternative = alternative.hypothesis,
-                        conf.level = confidence.interval)
+                        conf.level = 0.95)
 )

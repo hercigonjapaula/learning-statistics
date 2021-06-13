@@ -1,5 +1,136 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model CompareProportionsViewModel
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/lib/codemirror-5.61.1/lib/codemirror.js"></script>
+<link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/lib/codemirror.css">
+<link rel="stylesheet" type="text/css" href="~/lib/codemirror-5.61.1/theme/pastel-on-dark.css">
+<script type="text/javascript" src="~/lib/codemirror-5.61.1/mode/r/r.js"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        var code = $("#rcode-textarea")[0];
+        var editor = CodeMirror.fromTextArea(code, {
+            lineNumbers: true,
+            mode: "r",
+            theme: "pastel-on-dark"
+        });
+        editor.setSize("100%", "100%");
+        var cm = $('.CodeMirror')[0].CodeMirror;
+        $(cm.getWrapperElement()).hide();
+        $('a').click(function () {
+            var id = $(this).attr("id");
+            var data = document.getElementById("data");
+            var test_result = document.getElementById("test_result");
+            var cm = $('.CodeMirror')[0].CodeMirror;
+            if (id.localeCompare("1") == 0) {
+                data.style.display = "block";
+                test_result.style.display = "none";
+                $(cm.getWrapperElement()).hide();
+            } else if (id.localeCompare("2") == 0) {
+                data.style.display = "none";
+                test_result.style.display = "block";
+                $(cm.getWrapperElement()).hide();
+            } else if (id.localeCompare("3") == 0) {
+                data.style.display = "none";
+                test_result.style.display = "none";
+                $(cm.getWrapperElement()).show();
+            }
+        });
+    });
+</script>
+
+<div style="width: 100%">
+    <div style="float: left;width: 20%">
+        <div class="vertical-menu">
+            <form asp-controller="CategoricalDataCompareProportions" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="control-label" style="display: block">Skup podataka</label>
+                    <input type="file" name="file" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Učitaj</button>
+            </form>
+            <br />
+            <form asp-controller="CategoricalDataCompareProportions" asp-action="ChangeVariable">
+                <div class="form-group">
+                    <label class="control-label">Varijabla</label>
+                    <select asp-for="Variable1" asp-items="@Model.Variables" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Varijabla</label>
+                    <select asp-for="Variable2" asp-items="@Model.Variables" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
+                </div>
+            </form>
+            <form asp-controller="CategoricalDataCompareProportions" asp-action="ChangeLevel">
+                <div class="form-group">
+                    <label class="control-label">Kategorija prve varijable</label>
+                    <select asp-for="Level1" asp-items="@Model.Levels1" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kategorije druge varijable</label>
+                    <select asp-for="Level21" asp-items="@Model.Levels2" class="form-control"></select>
+                </div>
+                <div class="form-group">                    
+                    <select asp-for="Level22" asp-items="@Model.Levels2" class="form-control"></select>
+                </div>  
+                <div class="form-group">
+                    <label class="control-label">Alternativna hipoteza</label>
+                    <select asp-for="AlternativeHypothesis" asp-items="@Model.AlternativeHypotheses" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="data_plot_summary_rcode">
+        <a id="2" class="btn btn-light">Rezultati testa</a>
+        <a id="1" class="btn btn-light">Skup podataka</a>
+        <a id="3" class="btn btn-light">R kôd</a>
+        <div id="data" class="data" style="display: none">
+            <table class="table table-hover" id="dataset-table" style="float: left">
+                <tbody style="background-color:white">
+                    @{
+                        if (!(ViewBag.Dataset is null))
+                        {
+                            foreach (string line in ViewBag.Dataset)
+                            {
+                                <tr>
+                                    @{
+                                        foreach (string cell in line.Split(";"))
+                                        {
+                                            <td>
+                                                <center>@cell</center>
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div id="test_result" style="display: block">
+            <div id="plots-rscript" class="rcode-result">
+                @{
+                    foreach (string line in ViewBag.TestResult)
+                    {
+                        <p>@line</p>
+                    }
+                }
+            </div>
+        </div>
+        <br />
+        <textarea id="rcode-textarea" style="display: none">
+            @{           
+                foreach (string line in ViewBag.RCode)
+                {
+                    @line
+                    @System.Environment.NewLine                              
+                }
+            }
+        </textarea>
+    </div>
+</div>
+

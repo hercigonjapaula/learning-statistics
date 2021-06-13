@@ -3,7 +3,6 @@ library(graphics)
 library(ggplot2)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
-pdf(NULL)
 path = "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/"
 
 ## Skup podataka

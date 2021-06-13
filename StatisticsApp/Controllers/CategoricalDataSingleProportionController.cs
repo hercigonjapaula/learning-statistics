@@ -17,10 +17,14 @@ namespace StatisticsApp.Controllers
             "C:/Program Files/R/R-4.0.5/bin/x64/Rscript.exe");
         public static string RScriptPath = "C:/Users/Paula/Desktop/FER-10.semestar/" +
             "categorical_data_single_proportion.r";
+        public static string RScriptLevelsPath = "C:/Users/Paula/Desktop/FER-10.semestar/" +
+            "levels.r";
         public static string[] RCode = System.IO.File.ReadAllLines(RScriptPath);
         public static string Dataset;
         public static string[] Lines;
+        public static string Variable;
         public static List<SelectListItem> Variables;
+        public static List<SelectListItem> Levels;
         public static List<SelectListItem> AlternativeHypotheses = new List<SelectListItem>()
         {
             new SelectListItem { Text="Jednostrani - manji od (<)", Value="less" },
@@ -30,7 +34,79 @@ namespace StatisticsApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "test_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            SingleProportionViewModel singleProportionViewModel = new SingleProportionViewModel()
+            {                
+                Levels = new List<SelectListItem>(),                
+                Variables = new List<SelectListItem>(),
+                AlternativeHypothesis = AlternativeHypotheses[0].Text,
+                AlternativeHypotheses = AlternativeHypotheses,
+                ConfidenceInterval = 0.95
+            };
+            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.RCode = RCode;
+            return View("Index", singleProportionViewModel);          
+        }
+
+        [HttpPost]
+        public IActionResult ChangeVariable(SingleProportionViewModel singleProportionViewModel)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "test_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            Variable = singleProportionViewModel.Variable;
+            string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
+                new string[] { Dataset,            
+                singleProportionViewModel.Variable
+                },
+                out string standardError);            
+            Levels = new List<SelectListItem>();
+            foreach (string level in levels[0].Split(" ").Skip(1).Select(x => x = x.Replace("\"", "")))
+            {
+                Levels.Add(new SelectListItem() { Text = level, Value = level });
+            };
+            singleProportionViewModel.AlternativeHypothesis = AlternativeHypotheses[0].Text;
+            singleProportionViewModel.AlternativeHypotheses = AlternativeHypotheses;
+            singleProportionViewModel.Variables = Variables;
+            singleProportionViewModel.Level = Levels[0].Text;
+            singleProportionViewModel.Levels = Levels;
+            singleProportionViewModel.ConfidenceInterval = 0.95;            
+            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.RCode = RCode;
+            ViewBag.Dataset = Lines;
+            return View("Index", singleProportionViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ChangeLevel(SingleProportionViewModel singleProportionViewModel)
+        {            
+            singleProportionViewModel.AlternativeHypotheses = AlternativeHypotheses;
+            singleProportionViewModel.Variables = Variables;
+            singleProportionViewModel.Levels = Levels;
+            singleProportionViewModel.ConfidenceInterval = 0.95;
+            string[] output = CSharpR.ExecuteRScript(RScriptPath,
+                new string[] { WwwrootPath,
+                Dataset,
+                Variable,
+                singleProportionViewModel.NullHypothesis.ToString(),
+                singleProportionViewModel.AlternativeHypothesis,
+                singleProportionViewModel.Level
+                },
+                out string standardError);
+            ViewBag.TestResult = output.Skip(4);
+            ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "test_plots")
+                 .Select(fn => "~/test_plots/" + Path.GetFileName(fn));
+            ViewBag.RCode = RCode;
+            ViewBag.Dataset = Lines;
+            return View("Index", singleProportionViewModel);
         }
 
         [HttpPost]
@@ -56,7 +132,7 @@ namespace StatisticsApp.Controllers
             Lines = System.IO.File.ReadAllLines(Dataset);
             Variables = new List<SelectListItem>();
             int counter = 1;
-            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
+            foreach (string variable in Lines[0].Split(";").Select(x => x = x.Replace("\"", "")))
             {
                 Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
                 counter++;
@@ -70,6 +146,18 @@ namespace StatisticsApp.Controllers
                 AlternativeHypotheses = AlternativeHypotheses,
                 ConfidenceInterval = 0.95
             };
+            string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
+                new string[] { Dataset,
+                singleProportionViewModel.Variable
+                },
+                out string standardError);
+            Levels = new List<SelectListItem>();
+            foreach (string level in levels[0].Split(" ").Skip(1).Select(x => x = x.Replace("\"", "")))
+            {
+                Levels.Add(new SelectListItem() { Text = level, Value = level });
+            };
+            singleProportionViewModel.Level = Levels[0].Text;
+            singleProportionViewModel.Levels = Levels;
             ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
             ViewBag.RCode = RCode;
             return View("Index", singleProportionViewModel);

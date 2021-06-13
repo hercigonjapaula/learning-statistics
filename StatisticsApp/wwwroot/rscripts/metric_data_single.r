@@ -29,4 +29,4 @@ switch(test,
 
 #ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
 #  geom_point()
-#ggsave("plotic.png", path = "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/rcode_plots")
+#ggsave("plot.png", path = plots.path)

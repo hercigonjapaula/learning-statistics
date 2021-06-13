@@ -18,4 +18,4 @@ tbl = table(data[,variable1],data[,variable2])
 # hi-kvadrat test nezavisnosti
 chisq.test(tbl,correct=F)
 # fisher-irwinov egzaktni test
-fisher.test(tbl,alternative = alternative.hypothesis)
+fisher.test(tbl,alternative = alternative.hypothesis) 
