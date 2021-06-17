@@ -50,8 +50,13 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="CategoricalDataIndependence" asp-action="Index">Test nezavisnosti</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="LinearRegression" asp-action="Index">Linearna regresija</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark">Linearna regresija</a>
+                            <ul class="dropdown-menu">                              
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="LinearRegressionEstimate" asp-action="Index">Procjena parametara</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LinearRegressionInfer" asp-action="Index">Statističko zaključivanje o estimiranim parametrima</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LinearRegressionPredict" asp-action="Index">Predviđanje novih vrijednosti</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="NonparametricTests" asp-action="Index">Neparametarski testovi</a>

@@ -3,12 +3,12 @@ library(graphics)
 library(ggplot2)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
-path = "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/"
+path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[1]), header = TRUE)
-alternative.hypothesis <- as.character(args[2])
-confidence.interval <- as.numeric(args[3])
+data <- read.table(as.character(args[2]), header = TRUE)
+alternative.hypothesis <- as.character(args[3])
+confidence.interval <- as.numeric(args[4])
 
 ## Histogrami
 png(file=paste(path, "test_plots/histogram1.png", sep = ""))

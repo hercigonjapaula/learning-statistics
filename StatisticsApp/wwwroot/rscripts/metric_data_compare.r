@@ -5,14 +5,14 @@ library(stats)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
 pdf(NULL)
-path = "C:/Users/Paula/Desktop/FER-10.semestar/StatisticsApp/StatisticsApp/StatisticsApp/wwwroot/"
+path = args[1]
 
 ## Skup podataka
-data1 <- scan(as.character(args[1]))
-data2 <- scan(as.character(args[2]))
-alternative.hypothesis <- as.character(args[3])
-confidence.interval <- as.numeric(args[4])
-test <- as.character(args[5])
+data1 <- scan(as.character(args[2]))
+data2 <- scan(as.character(args[3]))
+alternative.hypothesis <- as.character(args[4])
+confidence.interval <- as.numeric(args[5])
+test <- as.character(args[6])
 
 ## Box plot 
 png(file=paste(path, "test_plots/boxplot.png", sep = ""))

@@ -63,7 +63,8 @@ namespace StatisticsApp.Controllers
                 file.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { Dataset1,
+                new string[] { WwwrootPath,
+                Dataset1,
                 Dataset2,
                 compareViewModel.AlternativeHypothesis,
                 compareViewModel.ConfidenceInterval.ToString(),

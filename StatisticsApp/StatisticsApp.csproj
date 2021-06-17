@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\basic_plots\" />
+    <Folder Include="wwwroot\linreg_plots\" />
     <Folder Include="wwwroot\test_plots\" />
     <Folder Include="wwwroot\rcode_plots\" />
   </ItemGroup>

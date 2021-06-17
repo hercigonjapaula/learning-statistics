@@ -56,7 +56,8 @@ namespace StatisticsApp.Controllers
         public IActionResult Test(IndependenceViewModel independenceViewModel)
         {
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { Dataset,
+                new string[] { WwwrootPath,
+                    Dataset,
                     independenceViewModel.Variable1,
                     independenceViewModel.Variable2,
                     independenceViewModel.AlternativeHypothesis
