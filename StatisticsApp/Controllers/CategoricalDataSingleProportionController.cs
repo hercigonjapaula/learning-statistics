@@ -146,9 +146,10 @@ namespace StatisticsApp.Controllers
                 AlternativeHypotheses = AlternativeHypotheses,
                 ConfidenceInterval = 0.95
             };
+            Variable = Variables[0].Value;
             string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
                 new string[] { Dataset,
-                singleProportionViewModel.Variable
+                singleProportionViewModel.Variables[0].Value
                 },
                 out string standardError);
             Levels = new List<SelectListItem>();
