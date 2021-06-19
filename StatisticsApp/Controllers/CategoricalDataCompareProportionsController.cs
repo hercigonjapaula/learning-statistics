@@ -47,7 +47,7 @@ namespace StatisticsApp.Controllers
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses               
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", compareProportionsViewModel);
         }
@@ -91,7 +91,7 @@ namespace StatisticsApp.Controllers
             compareProportionsViewModel.Level22 = Levels2[0].Text;
             compareProportionsViewModel.Levels1 = Levels1;
             compareProportionsViewModel.Levels2 = Levels2;            
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             ViewBag.Dataset = Lines;
             return View("Index", compareProportionsViewModel);
@@ -105,7 +105,7 @@ namespace StatisticsApp.Controllers
             compareProportionsViewModel.Levels1 = Levels1;
             compareProportionsViewModel.Levels2 = Levels2;            
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { WwwrootPath,
+                new string[] { WwwrootPath + "test_plots",
                 Dataset,
                 Variable1,
                 Variable2,
@@ -115,7 +115,12 @@ namespace StatisticsApp.Controllers
                 compareProportionsViewModel.AlternativeHypothesis                
                 },
                 out string standardError);
-            ViewBag.TestResult = output;
+            output = output[0].Trim().Split(" ");
+            ViewBag.NumOfSucc = output[0];
+            ViewBag.NumOfTrials = output[1];
+            ViewBag.PValue = output[2];
+            ViewBag.ConfInt = "[" + output[3] + ", " + output[4] + "]";
+            ViewBag.Estimate = output[5];
             ViewBag.RCode = RCode;
             ViewBag.Dataset = Lines;
             return View("Index", compareProportionsViewModel);
@@ -173,7 +178,7 @@ namespace StatisticsApp.Controllers
             compareProportionsViewModel.Level22 = Levels1[0].Text;
             compareProportionsViewModel.Levels1 = Levels1;
             compareProportionsViewModel.Levels2 = Levels1;
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", compareProportionsViewModel);
         }

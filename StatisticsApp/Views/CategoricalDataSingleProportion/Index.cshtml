@@ -36,6 +36,11 @@
         });
     });
 </script>
+<script>
+    function show_value(x) {
+        document.getElementById("slider_value").innerHTML = x;
+    }
+</script>
 
 <div style="width: 100%">
     <div style="float: left;width: 20%">
@@ -111,23 +116,44 @@
                 </tbody>
             </table>
         </div>
-        <div id="test_result" style="display: block">
+        <div id="test_result" style="display: block; text-align: center">
+            @{
+                if (ViewBag.TestResult is null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr class="thead-light">
+                                <th>Broj uspjeha</th>
+                                <th>Broj eksperimenata</th>
+                                <th>P-vrijednost</th>
+                                <th>Interval povjerenja</th>
+                                <th>Procjena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.NumOfSucc</td>
+                                <td>@ViewBag.NumOfTrials</td>
+                                <td>@ViewBag.PValue</td>
+                                <td>@ViewBag.ConfInt</td>
+                                <td>@ViewBag.Estimate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    @ViewBag.TestResult
+                }
+            }
             <div>
                 @{
                     if (!(ViewBag.Images is null))
                     {
                         foreach (var image in (IEnumerable<string>)ViewBag.Images)
                         {
-                            <img src="@Url.Content(image)" />
+                            <img src="@Url.Content(image)" style="width: 500px" />
                         }
-                    }
-                }
-            </div>
-            <div id="plots-rscript" class="rcode-result">
-                @{
-                    foreach (string line in ViewBag.TestResult)
-                    {
-                        <p>@line</p>
                     }
                 }
             </div>

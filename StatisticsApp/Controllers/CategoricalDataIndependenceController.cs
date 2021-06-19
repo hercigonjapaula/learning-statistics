@@ -48,7 +48,7 @@ namespace StatisticsApp.Controllers
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses                
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", independenceViewModel);
         }
@@ -63,9 +63,14 @@ namespace StatisticsApp.Controllers
                     independenceViewModel.AlternativeHypothesis
                 },
                 out string standardError);
-            ViewBag.TestResult = output;
+            output = output[0].Trim().Split(" ");
+            ViewBag.NumOfSucc = output[0];
+            ViewBag.NumOfTrials = output[1];
+            ViewBag.PValue = output[2];
             ViewBag.RCode = RCode;
-            ViewBag.Dataset = Lines;            
+            ViewBag.Dataset = Lines;
+            ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "test_plots")
+                 .Select(fn => "~/test_plots/" + Path.GetFileName(fn));
             independenceViewModel.Variables1 = Variables1;
             independenceViewModel.Variables2 = Variables2;           
             independenceViewModel.AlternativeHypotheses = AlternativeHypotheses;
@@ -112,7 +117,7 @@ namespace StatisticsApp.Controllers
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses                
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", independenceViewModel);
         }

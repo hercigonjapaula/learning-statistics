@@ -163,14 +163,62 @@
                 <br />
                 <img src="~/plot.png" />
             </div>
-            <div id="summary" style="float: left">
+            <div id="summary" style="float: left; margin-left: 110px">
                 <br />
-                <p>    <b>Minimum</b> = @ViewBag.Min</p>
-                <p>    <b>1. kvartil</b> = @ViewBag.FirstQ</p>
-                <p>    <b>Aritmetička sredina</b> = @ViewBag.Mean</p>
-                <p>    <b>Medijan</b> = @ViewBag.Median</p>
-                <p>    <b>3. kvartil</b> = @ViewBag.ThirdQ</p>
-                <p>    <b>Maksimum</b> = @ViewBag.Max</p>
+                <table class="table">
+                    <thead>
+                        <tr class="table-ro">
+                            <th>Mjera</th>
+                            <th>Vrijednost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Minimum</td>
+                            <td>@ViewBag.Min</td>
+                        </tr>
+                        <tr>
+                            <td>1. kvartil</td>
+                            <td>@ViewBag.FirstQ</td>
+                        </tr>
+                        <tr>
+                            <td>Aritmetička sredina</td>
+                            <td>@ViewBag.Mean</td>
+                        </tr>
+                        <tr>
+                            <td>Medijan</td>
+                            <td>@ViewBag.Median</td>
+                        </tr>
+                        <tr>
+                            <td>Mod</td>
+                            <td>@ViewBag.Mfv</td>
+                        </tr>
+                        <tr>
+                            <td>3. kvartil</td>
+                            <td>@ViewBag.ThirdQ</td>
+                        </tr>
+                        <tr>
+                            <td>Maksimum</td>
+                            <td>@ViewBag.Max</td>
+                        </tr>
+                        <tr>
+                            <td>Rang</td>
+                            <td>@ViewBag.Rang</td>
+                        </tr>
+                        <tr>
+                            <td>Interkvartilni rang</td>
+                            <td>@ViewBag.IQR</td>
+                        </tr>
+                        <tr>
+                            <td>Varijanca</td>
+                            <td>@ViewBag.Var</td>
+                        </tr>
+                        <tr>
+                            <td>Standardna devijacija</td>
+                            <td>@ViewBag.StdDev</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <br />
@@ -180,7 +228,7 @@
                 {
                     foreach (var image in (IEnumerable<string>)ViewBag.Images)
                     {
-                        <img src="@Url.Content(image)" style="width:600px"/>
+                        <img src="@Url.Content(image)" style="width:400px; float: left"/>
                     }
                 }
             }

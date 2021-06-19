@@ -25,12 +25,12 @@ ks.test(rstandard(fit),'pnorm')
 ## Statističko zaključivanje
 s <- summary(fit)
 # t-test
-s$coefficients
+print(paste("T-test: ", s$coefficients, sep = " "))
 # f-test
-s$fstatistic
+print(paste("F-test: ", s$fstatistic, sep = " "))
 
 ## Mjere kvalitete prilagodbe modela podacima
 # koeficijent determinacije
-s$r.squared
+print(paste("Koeficijent determinacije: ", s$r.squared, sep = " "))
 # prilagođeni koeficijent determinacije
-s$adj.r.squared
+print(paste("Prilagođeni koeficijent determinacije: ", s$adj.r.squared, sep = " "))

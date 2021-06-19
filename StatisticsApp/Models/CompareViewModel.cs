@@ -9,7 +9,7 @@ namespace StatisticsApp.Models
         public string Dataset2 { get; set; }
         public string Test { get; set; }      
         public string AlternativeHypothesis { get; set; }
-        public double ConfidenceInterval { get; set; }
+        public string ConfidenceInterval { get; set; }
         public List<SelectListItem> Tests { get; set; }       
         public List<SelectListItem> AlternativeHypotheses { get; set; }
     }

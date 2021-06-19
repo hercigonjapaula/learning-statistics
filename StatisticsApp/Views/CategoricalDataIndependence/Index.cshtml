@@ -95,12 +95,40 @@
                 </tbody>
             </table>
         </div>
-        <div id="test_result" style="display: block">
-            <div id="plots-rscript" class="rcode-result">
+        <div id="test_result" style="display: block; text-align: center">
+            @{
+                if (ViewBag.TestResult is null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr class="thead-light">
+                                <th>Test statistika</th>
+                                <th>Stupnjevi slobode</th>
+                                <th>P-vrijednost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.NumOfSucc</td>
+                                <td>@ViewBag.NumOfTrials</td>
+                                <td>@ViewBag.PValue</td>   
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    @ViewBag.TestResult
+                }
+            }
+            <div>
                 @{
-                    foreach (string line in ViewBag.TestResult)
+                    if (!(ViewBag.Images is null))
                     {
-                        <p>@line</p>
+                        foreach (var image in (IEnumerable<string>)ViewBag.Images)
+                        {
+                            <img src="@Url.Content(image)" style="width: 500px" />
+                        }
                     }
                 }
             </div>

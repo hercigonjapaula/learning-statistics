@@ -111,12 +111,44 @@
                 </tbody>
             </table>
         </div>
-        <div id="test_result" style="display: block">
-            <div id="plots-rscript" class="rcode-result">
+        <div id="test_result" style="display: block; text-align: center">
+            @{
+                if (ViewBag.TestResult is null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr class="thead-light">
+                                <th>Broj uspjeha</th>
+                                <th>Broj eksperimenata</th>
+                                <th>P-vrijednost</th>
+                                <th>Interval povjerenja</th>
+                                <th>Procjena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.NumOfSucc</td>
+                                <td>@ViewBag.NumOfTrials</td>
+                                <td>@ViewBag.PValue</td>
+                                <td>@ViewBag.ConfInt</td>
+                                <td>@ViewBag.Estimate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    @ViewBag.TestResult
+                }
+            }
+            <div>
                 @{
-                    foreach (string line in ViewBag.TestResult)
+                    if (!(ViewBag.Images is null))
                     {
-                        <p>@line</p>
+                        foreach (var image in (IEnumerable<string>)ViewBag.Images)
+                        {
+                            <img src="@Url.Content(image)" style="width: 500px" />
+                        }
                     }
                 }
             </div>

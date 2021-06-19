@@ -66,18 +66,20 @@ namespace StatisticsApp.Controllers
                 new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
                     datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
-                out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                WwwrootPath + "summary.txt");
-            string[] summary = lines[1].Trim().Split("   ");
-            ViewBag.Min = summary[0];
-            ViewBag.FirstQ = summary[1];
-            ViewBag.Median = summary[2];
-            ViewBag.Mean = summary[3];
-            ViewBag.ThirdQ = summary[4];
-            ViewBag.Max = summary[5];
+                WwwrootPath + "descriptive_statistics.txt");
+            string[] summary = lines[0].Trim().Split(" ");
+            ViewBag.Mean = summary[0];            
+            ViewBag.Median = summary[1];
+            ViewBag.Mfv = summary[2];
+            ViewBag.Rang = summary[3];
+            ViewBag.IQR = summary[4];
+            ViewBag.Var = summary[5];
+            ViewBag.StdDev = summary[6];
+            ViewBag.Min = summary[7];            
+            ViewBag.Max = summary[8];
+            ViewBag.FirstQ = summary[9];
+            ViewBag.ThirdQ = summary[10];
             ViewBag.Dataset = Lines;          
             ViewBag.RCode = RCode;
             ViewBag.RunRCode = false;
@@ -116,18 +118,20 @@ namespace StatisticsApp.Controllers
                 new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
                     datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
-                out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                WwwrootPath + "summary.txt");
-            string[] summary = lines[1].Trim().Split("   ");
-            ViewBag.Min = summary[0];
-            ViewBag.FirstQ = summary[1];
-            ViewBag.Median = summary[2];
-            ViewBag.Mean = summary[3];
-            ViewBag.ThirdQ = summary[4];
-            ViewBag.Max = summary[5];
+                WwwrootPath + "descriptive_statistics.txt");
+            string[] summary = lines[0].Trim().Split(" ");
+            ViewBag.Mean = summary[0];
+            ViewBag.Median = summary[1];
+            ViewBag.Mfv = summary[2];
+            ViewBag.Rang = summary[3];
+            ViewBag.IQR = summary[4];
+            ViewBag.Var = summary[5];
+            ViewBag.StdDev = summary[6];
+            ViewBag.Min = summary[7];
+            ViewBag.Max = summary[8];
+            ViewBag.FirstQ = summary[9];
+            ViewBag.ThirdQ = summary[10];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
             ViewBag.RunRCode = false;
@@ -155,18 +159,20 @@ namespace StatisticsApp.Controllers
                 new string[] { WwwrootPath, PlotsPath, datasetViewModel.Dataset,
                     datasetViewModel.Variable, datasetViewModel.Plot }, 
                 out string standardError);
-            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
-                out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                WwwrootPath + "summary.txt");
-            string[] summary = lines[1].Trim().Split("   ");
-            ViewBag.Min = summary[0];
-            ViewBag.FirstQ = summary[1];
-            ViewBag.Median = summary[2];
-            ViewBag.Mean = summary[3];
-            ViewBag.ThirdQ = summary[4];
-            ViewBag.Max = summary[5];
+                WwwrootPath + "descriptive_statistics.txt");
+            string[] summary = lines[0].Trim().Split(" ");
+            ViewBag.Mean = summary[0];
+            ViewBag.Median = summary[1];
+            ViewBag.Mfv = summary[2];
+            ViewBag.Rang = summary[3];
+            ViewBag.IQR = summary[4];
+            ViewBag.Var = summary[5];
+            ViewBag.StdDev = summary[6];
+            ViewBag.Min = summary[7];
+            ViewBag.Max = summary[8];
+            ViewBag.FirstQ = summary[9];
+            ViewBag.ThirdQ = summary[10];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
             ViewBag.RunRCode = false;
@@ -217,18 +223,20 @@ namespace StatisticsApp.Controllers
                 new string[] { WwwrootPath, PlotsPath, Dataset,
                     datasetViewModel.Variable, datasetViewModel.Plot },
                 out string standardError);
-            output = CSharpR.ExecuteRScript("C:/Users/Paula/Desktop/FER-10.semestar/summary.r",
-                new string[] { datasetViewModel.Dataset, datasetViewModel.Variable, datasetViewModel.Plot },
-                out string stdError);
             string[] lines = System.IO.File.ReadAllLines(
-                WwwrootPath + "summary.txt");
-            string[] summary = lines[1].Trim().Split("   ");
-            ViewBag.Min = summary[0];
-            ViewBag.FirstQ = summary[1];
-            ViewBag.Median = summary[2];
-            ViewBag.Mean = summary[3];
-            ViewBag.ThirdQ = summary[4];
-            ViewBag.Max = summary[5];
+                WwwrootPath + "descriptive_statistics.txt");
+            string[] summary = lines[0].Trim().Split(" ");
+            ViewBag.Mean = summary[0];
+            ViewBag.Median = summary[1];
+            ViewBag.Mfv = summary[2];
+            ViewBag.Rang = summary[3];
+            ViewBag.IQR = summary[4];
+            ViewBag.Var = summary[5];
+            ViewBag.StdDev = summary[6];
+            ViewBag.Min = summary[7];
+            ViewBag.Max = summary[8];
+            ViewBag.FirstQ = summary[9];
+            ViewBag.ThirdQ = summary[10];
             ViewBag.Dataset = Lines;
             ViewBag.RCode = RCode;
             ViewBag.RunRCode = false;
@@ -267,16 +275,21 @@ namespace StatisticsApp.Controllers
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "rcode_plots")
                              .Select(fn => "~/rcode_plots/" + Path.GetFileName(fn));
             string[] lines = System.IO.File.ReadAllLines(
-                WwwrootPath + "summary.txt");
-            string[] summary = lines[1].Trim().Split("   ");
-            ViewBag.Min = summary[0];
-            ViewBag.FirstQ = summary[1];
-            ViewBag.Median = summary[2];
-            ViewBag.Mean = summary[3];
-            ViewBag.ThirdQ = summary[4];
-            ViewBag.Max = summary[5];
+                WwwrootPath + "descriptive_statistics.txt");
+            string[] summary = lines[0].Trim().Split(" ");
+            ViewBag.Mean = summary[0];
+            ViewBag.Median = summary[1];
+            ViewBag.Mfv = summary[2];
+            ViewBag.Rang = summary[3];
+            ViewBag.IQR = summary[4];
+            ViewBag.Var = summary[5];
+            ViewBag.StdDev = summary[6];
+            ViewBag.Min = summary[7];
+            ViewBag.Max = summary[8];
+            ViewBag.FirstQ = summary[9];
+            ViewBag.ThirdQ = summary[10];
             ViewBag.Dataset = Lines;
-            ViewBag.RCode = RCode;
+            ViewBag.RCode = System.IO.File.ReadAllLines(path);
             ViewBag.RunRCode = true;
             ViewBag.BasicPlots = Directory.EnumerateFiles(WwwrootPath + "basic_plots")
                 .Select(fn => "~/basic_plots/" + Path.GetFileName(fn));

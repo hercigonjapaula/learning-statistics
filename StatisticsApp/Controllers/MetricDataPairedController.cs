@@ -39,9 +39,9 @@ namespace StatisticsApp.Controllers
             {
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses,
-                ConfidenceInterval = 0.95
+                ConfidenceInterval = "0.95"
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", pairedViewModel);
         }
@@ -55,13 +55,18 @@ namespace StatisticsApp.Controllers
                 file.Delete();
             }
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { WwwrootPath,
+                new string[] { WwwrootPath + "test_plots",
                 Dataset,
                 pairedViewModel.AlternativeHypothesis,
-                pairedViewModel.ConfidenceInterval.ToString(),
+                pairedViewModel.ConfidenceInterval,
                 },
                 out string standardError);
-            ViewBag.TestResult = output.Skip(4);
+            output = output[4].Trim().Split(" ");
+            ViewBag.Statistic = output[0];
+            ViewBag.Df = output[1];
+            ViewBag.PValue = output[2];
+            ViewBag.ConfInt = "[" + output[3] + ", " + output[4] + "]";
+            ViewBag.Estimate = output[5];
             ViewBag.RCode = RCode;
             ViewBag.Dataset = Lines;           
             pairedViewModel.AlternativeHypotheses = AlternativeHypotheses;
@@ -96,9 +101,9 @@ namespace StatisticsApp.Controllers
             {                
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses,       
-                ConfidenceInterval = 0.95
+                ConfidenceInterval = "0.95"
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", pairedViewModel);
         }

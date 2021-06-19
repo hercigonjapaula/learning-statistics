@@ -45,8 +45,23 @@
 <div style="width: 100%">
     <div style="float: left;width: 20%">
         <div class="vertical-menu">
-            <p>Skup podataka: <b>@TempData["dataset_name"]</b></p>
-            @{ TempData.Keep("dataset_name"); }
+            <form asp-controller="MetricDataSingle" asp-action="ChangeDataset">
+                <div class="form-group">
+                    <label class="control-label">Skup podataka</label>
+                    <select asp-for="Dataset" asp-items="@Model.Datasets" class="form-control"></select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Odaberi</button>
+            </form>
+            <br />
+            <form asp-controller="MetricDataSingle" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="control-label" style="display: block">Vlastiti podatci</label>
+                    <input type="file" name="file" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Učitaj</button>
+            </form>
+        </div>
+        <div class="vertical-menu">
             <form asp-controller="MetricDataSingle" asp-action="Test">
                 <div class="form-group">
                     <label class="control-label">Varijabla</label>
@@ -102,13 +117,47 @@
                 </tbody>
             </table>
         </div>
-        <div id="test_result" class="rcode-result" style="display: block">
+        <div id="test_result" style="display: block; text-align: center">
             @{
-                foreach (string line in ViewBag.TestResult)
+                if (ViewBag.TestResult is null)
                 {
-                    <p>@line</p>
+                    <table class="table">
+                        <thead>
+                            <tr class="thead-light">
+                                <th>Test statistika</th>
+                                <th>Stupnjevi slobode</th>
+                                <th>P-vrijednost</th>
+                                <th>Interval povjerenja</th>
+                                <th>Procjena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.Statistic</td>
+                                <td>@ViewBag.Df</td>
+                                <td>@ViewBag.PValue</td>
+                                <td>@ViewBag.ConfInt</td>
+                                <td>@ViewBag.Estimate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    @ViewBag.TestResult
                 }
             }
+            <div>
+                @{
+                    if (!(ViewBag.Images is null))
+                    {
+                        foreach (var image in (IEnumerable<string>)ViewBag.Images)
+                        {
+                            <img src="@Url.Content(image)" style="width: 500px" />
+                        }
+                    }
+                }
+            </div>
         </div>
         <br />
         <textarea id="rcode-textarea" style="display: none">

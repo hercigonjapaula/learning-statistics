@@ -1,5 +1,3 @@
-using System;
-
 namespace StatisticsApp.Models
 {
     public class ErrorViewModel

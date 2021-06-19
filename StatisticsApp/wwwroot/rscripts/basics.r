@@ -60,23 +60,37 @@ dev.off()
 
 ## Mjere centralne tendencije
 # aritmetièka sredina
-mean <- mean(data[,variable])
+mean <- round(mean(data[,variable]), 2)
 # medijan
-median <- median(data[,variable])
+median <- round(median(data[,variable]), 2)
 # mod
-mfv <- mfv(data[,variable])
+mfv <- round(mfv(data[,variable]), 2)
 
 ## Mjere rasipanja
 # rang
-rang <- max(data[,variable])-min(data[,variable])
+rang <- round(max(data[,variable])-min(data[,variable]), 2)
 # interkvartilni rang
-iqr <- IQR(data[,variable])
+iqr <- round(IQR(data[,variable]), 2)
 # varijanca
-var <- var(data[,variable])
+var <- round(var(data[,variable]), 2)
 # standardna devijacija
-stddev <- sd(data[,variable])
+stddev <- round(sd(data[,variable]), 2)
+
+## Ostale mjere
+# minimum
+minimum <- min(data[,variable])
+# maksimum
+maximum <- max(data[,variable])
+# 1. kvartil
+first.quartile <- round(summary(data[,variable])[2], 2)
+# 3. kvartil
+third.quartile <- round(summary(data[,variable])[5], 2)
 
 ## Izlaz
-sink("C:/Users/Paula/Desktop/FER-10.semestar/output.txt")
-print(summary(data[,variable]))
+sink(paste(root.path, "descriptive_statistics.txt", sep = ""))
+cat(paste(mean, median, mfv, 
+            rang, iqr, var, stddev, 
+            minimum, maximum, 
+            first.quartile, third.quartile, 
+            sep = " "))
 sink()

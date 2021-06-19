@@ -46,9 +46,9 @@ namespace StatisticsApp.Controllers
                 Variables = new List<SelectListItem>(),
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses,
-                ConfidenceInterval = 0.95
+                ConfidenceInterval = "0.95"
             };
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", singleProportionViewModel);          
         }
@@ -78,8 +78,8 @@ namespace StatisticsApp.Controllers
             singleProportionViewModel.Variables = Variables;
             singleProportionViewModel.Level = Levels[0].Text;
             singleProportionViewModel.Levels = Levels;
-            singleProportionViewModel.ConfidenceInterval = 0.95;            
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            singleProportionViewModel.ConfidenceInterval = "0.95";            
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             ViewBag.Dataset = Lines;
             return View("Index", singleProportionViewModel);
@@ -90,18 +90,23 @@ namespace StatisticsApp.Controllers
         {            
             singleProportionViewModel.AlternativeHypotheses = AlternativeHypotheses;
             singleProportionViewModel.Variables = Variables;
-            singleProportionViewModel.Levels = Levels;
-            singleProportionViewModel.ConfidenceInterval = 0.95;
+            singleProportionViewModel.Levels = Levels;            
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { WwwrootPath,
+                new string[] { WwwrootPath + "test_plots",
                 Dataset,
                 Variable,
-                singleProportionViewModel.NullHypothesis.ToString(),
+                singleProportionViewModel.NullHypothesis,
                 singleProportionViewModel.AlternativeHypothesis,
-                singleProportionViewModel.Level
+                singleProportionViewModel.Level,
+                singleProportionViewModel.ConfidenceInterval
                 },
                 out string standardError);
-            ViewBag.TestResult = output.Skip(4);
+            output = output[4].Trim().Split(" ");
+            ViewBag.NumOfSucc = output[0];
+            ViewBag.NumOfTrials = output[1];
+            ViewBag.PValue = output[2];
+            ViewBag.ConfInt = "[" + output[3] + ", " + output[4] + "]";
+            ViewBag.Estimate = output[5];
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "test_plots")
                  .Select(fn => "~/test_plots/" + Path.GetFileName(fn));
             ViewBag.RCode = RCode;
@@ -144,7 +149,7 @@ namespace StatisticsApp.Controllers
                 Variables = Variables,                
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
                 AlternativeHypotheses = AlternativeHypotheses,
-                ConfidenceInterval = 0.95
+                ConfidenceInterval = "0.95"
             };
             Variable = Variables[0].Value;
             string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
@@ -159,7 +164,7 @@ namespace StatisticsApp.Controllers
             };
             singleProportionViewModel.Level = Levels[0].Text;
             singleProportionViewModel.Levels = Levels;
-            ViewBag.TestResult = new string[] { "Odaberite parametre testa." };
+            ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", singleProportionViewModel);
         }

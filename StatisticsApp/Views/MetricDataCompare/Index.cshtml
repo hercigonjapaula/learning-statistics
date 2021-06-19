@@ -133,23 +133,44 @@
                 </tbody>
             </table>
         </div>
-        <div id="test_result"  style="display: block">
+        <div id="test_result" style="display: block; text-align: center">
+            @{
+                if (ViewBag.TestResult is null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr class="thead-light">
+                                <th>Test statistika</th>
+                                <th>Stupnjevi slobode</th>
+                                <th>P-vrijednost</th>
+                                <th>Interval povjerenja</th>
+                                <th>Procjena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.Statistic</td>
+                                <td>@ViewBag.Df</td>
+                                <td>@ViewBag.PValue</td>
+                                <td>@ViewBag.ConfInt</td>
+                                <td>@ViewBag.Estimate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    @ViewBag.TestResult
+                }
+            }
             <div>
                 @{
                     if (!(ViewBag.Images is null))
                     {
                         foreach (var image in (IEnumerable<string>)ViewBag.Images)
                         {
-                            <img src="@Url.Content(image)" />
+                            <img src="@Url.Content(image)" style="width: 500px" />
                         }
-                    }
-                }
-            </div>
-            <div id="plots-rscript" class="rcode-result">
-                @{
-                    foreach (string line in ViewBag.TestResult)
-                    {
-                        <p>@line</p>
                     }
                 }
             </div>
