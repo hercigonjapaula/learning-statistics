@@ -111,7 +111,7 @@
                             <tr>
                                 <td>@ViewBag.NumOfSucc</td>
                                 <td>@ViewBag.NumOfTrials</td>
-                                <td>@ViewBag.PValue</td>   
+                                <td>@ViewBag.PValue</td>
                             </tr>
                         </tbody>
                     </table>
@@ -121,13 +121,51 @@
                     @ViewBag.TestResult
                 }
             }
-            <div>
+            <div style="margin-top: 10px; text-align: center">
+                <div style="float: left; text-align: center">
+                    @{
+                        if (ViewBag.TestResult is null)
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        @{
+                                            foreach (string colName in ViewBag.ColNames)
+                                            {
+                                                <th scope="col">@colName</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (string rowName in ViewBag.RowNames)
+                                        {
+                                            <tr>
+                                                <th scope="row">@rowName</th>
+                                                @{
+                                                    foreach (string rowValue in ViewBag.Rows[rowName])
+                                                    {
+                                                        <td>@rowValue</td>
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+
                 @{
                     if (!(ViewBag.Images is null))
                     {
                         foreach (var image in (IEnumerable<string>)ViewBag.Images)
                         {
-                            <img src="@Url.Content(image)" style="width: 500px" />
+                            <img src="@Url.Content(image)" style="width: 500px; float: left; margin-left: 50px; text-align: center" />
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +72,20 @@ namespace StatisticsApp.Controllers
             ViewBag.Dataset = Lines;
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "test_plots")
                  .Select(fn => "~/test_plots/" + Path.GetFileName(fn));
+            string[] table = System.IO.File.ReadAllLines(WwwrootPath + "contingency_table.txt");
+            ViewBag.ColNames = table[1].Trim().Split(" ");
+            List<string> rowNames = new List<string>();
+            Dictionary<string, List<string>> rows = new Dictionary<string, List<string>>();
+            Regex regex = new Regex(" +");            
+            foreach (string line in table.Skip(2))
+            {
+                string[] row = regex.Split(line.Trim());
+                string rowName = row[0];
+                rowNames.Add(rowName);
+                rows[rowName] = row.Skip(1).ToList();
+            }
+            ViewBag.RowNames = rowNames;
+            ViewBag.Rows = rows;
             independenceViewModel.Variables1 = Variables1;
             independenceViewModel.Variables2 = Variables2;           
             independenceViewModel.AlternativeHypotheses = AlternativeHypotheses;
@@ -101,7 +116,7 @@ namespace StatisticsApp.Controllers
             Variables1 = new List<SelectListItem>();
             Variables2 = new List<SelectListItem>();
             int counter = 1;
-            foreach (string variable in Lines[0].Split(";").Select(x => x = x.Replace("\"", "")))
+            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
                 Variables1.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
                 Variables2.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });

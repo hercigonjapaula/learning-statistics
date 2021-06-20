@@ -10,7 +10,7 @@ pdf(NULL)
 path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[2]),sep=";",header = TRUE)
+data <- read.table(as.character(args[2]),sep=",",header = TRUE)
 variable <- as.numeric(args[3])
 null.hypothesis <- as.numeric(args[4])
 alternative.hypothesis <- as.character(args[5])
@@ -20,10 +20,12 @@ data[,variable] <- factor(data[,variable])
 
 ## Bar plot i pie plot
 png(file=paste(path, "barplot.png", sep = "/"))
-barplot(table(data[,variable]))
+barplot(table(data[,variable]), main = paste("Stupcasti dijagram varijable", 
+                                             names(data)[variable], sep = " "))
 dev.off()
 png(file=paste(path, "pieplot.png", sep = "/"))
-pie(table(data[,variable]))
+pie(table(data[,variable]), main = paste("Kruzni dijagram varijable", 
+                                         names(data)[variable], sep = " "))
 dev.off()
 
 ## Test o jednoj proporciji

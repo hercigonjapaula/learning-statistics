@@ -34,7 +34,7 @@ namespace StatisticsApp.Controllers
                 {
                     Variables = new List<SelectListItem>()
                 };
-            ViewBag.Result = new string[] { "Učitajte skup podataka." };
+            ViewBag.Result = "Učitajte skup podataka.";
             ViewBag.RCode = RCode;           
             return View("Index", linRegEstimateViewModel);
         }
@@ -43,14 +43,16 @@ namespace StatisticsApp.Controllers
         public IActionResult ChangeXAndY(LinearRegressionEstimateViewModel linRegEstimateViewModel)
         {
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
-                new string[] { WwwrootPath,
+                new string[] { WwwrootPath + "linreg_plots",
                 Dataset,
                 linRegEstimateViewModel.X,
                 linRegEstimateViewModel.Y
                 },
                 out string standardError);
             linRegEstimateViewModel.Variables = Variables;
-            ViewBag.Result = output.SkipLast(2);
+            output = output[0].Split(" ");
+            ViewBag.Intercept = output[0];
+            ViewBag.Slope = output[1];
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "linreg_plots")
                  .Select(fn => "~/linreg_plots/" + Path.GetFileName(fn));
             ViewBag.RCode = RCode;
@@ -96,7 +98,7 @@ namespace StatisticsApp.Controllers
             TempData["dataset_name"] = file.FileName;
             TempData.Keep();
             ViewBag.RCode = RCode;
-            ViewBag.Result = ViewBag.Result = new string[] { "Odaberite varijable X i Y." }; 
+            ViewBag.Result = ViewBag.Result = "Odaberite varijable X i Y."; 
             return View("Index", linRegEstimateViewModel);
         }
 

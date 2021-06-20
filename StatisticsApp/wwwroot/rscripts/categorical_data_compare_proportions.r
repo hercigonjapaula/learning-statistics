@@ -1,13 +1,14 @@
 library(datasets)
 library(graphics)
 library(ggplot2)
+library(gginference)
 require(TeachingDemos)
 args = commandArgs(trailingOnly = TRUE)
 pdf(NULL)
 path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[2]),sep=";",header = TRUE)
+data <- read.table(as.character(args[2]),sep=",",header = TRUE)
 variable1 <- as.numeric(args[3])
 variable2 <- as.numeric(args[4])
 level1 <- as.character(args[5])
@@ -21,7 +22,7 @@ n = c(length(data[,variable1][data[,variable2] == level21]),
       length(data[,variable1][data[,variable2] == level22]))
 # broj uspjeha iz oba uzorka
 x = c(length(which(data[,variable1][data[,variable2] == level21] == level1)), 
-      length(data[,variable1][data[,variable2] == level22] == level1))
+      length(which(data[,variable1][data[,variable2] == level22] == level1)))
 # test o dvije proporcije
 test.result <- prop.test(x, n, alternative = alternative.hypothesis, correct="FALSE")
 cat(test.result$statistic, test.result$parameter, 

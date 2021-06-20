@@ -72,10 +72,20 @@ namespace StatisticsApp.Controllers
                 out string standardError);
             output = output[2].Trim().Split(" ");
             ViewBag.Statistic = output[0];
-            ViewBag.Df = output[1];
-            ViewBag.PValue = output[2];
-            ViewBag.ConfInt = "[" + output[3] + ", " + output[4] + "]";
-            ViewBag.Estimate = output[5];    
+            if (compareViewModel.Test == "mean")
+            {
+                ViewBag.Df = output[1];
+                ViewBag.PValue = output[2];
+                ViewBag.ConfInt = "[" + output[3] + ", " + output[4] + "]";
+                ViewBag.Estimate = "(" + output[5] + ", " + output[6] + ")";
+            }
+            else
+            {
+                ViewBag.Df = "(" + output[1] + ", " + output[2] + ")";
+                ViewBag.PValue = output[3];
+                ViewBag.ConfInt = "[" + output[4] + ", " + output[5] + "]";                                                               
+                ViewBag.Estimate = output[6];                
+            }                       
             ViewBag.RCode = RCode;
             ViewBag.Dataset1 = Lines1;
             ViewBag.Dataset2 = Lines2;                       

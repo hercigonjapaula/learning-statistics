@@ -17,7 +17,8 @@ test <- as.character(args[6])
 
 ## Box plot 
 png(file=paste(path, "boxplot.png", sep = "/"))
-boxplot(data1, data2, main = "Pravokutni dijagrami obje populacije")
+boxplot(data1, data2, main = "Pravokutni dijagrami obje populacije",
+        names = c("Prvi skup podataka", "Drugi skup podataka"))
 dev.off()
 
 ## Test o jednakosti srednjih vrijednosti / varijanci dviju populacija
@@ -35,7 +36,7 @@ if(test == "mean"){
 } else if(test == "var"){
   test.result <- var.test(data1, data2, 
                           alternative = alternative.hypothesis,
-                          conf.level = confidence.interval)  
+                          conf.level = confidence.interval)
   cat(test.result$statistic, test.result$parameter, 
       test.result$p.value, test.result$conf.int, 
       test.result$estimate, sep = " ")  

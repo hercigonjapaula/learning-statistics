@@ -69,7 +69,7 @@ namespace StatisticsApp.Controllers
                 },
                 out string standardError);            
             Levels = new List<SelectListItem>();
-            foreach (string level in levels[0].Split(" ").Skip(1).Select(x => x = x.Replace("\"", "")))
+            foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
                 Levels.Add(new SelectListItem() { Text = level, Value = level });
             };
@@ -87,7 +87,13 @@ namespace StatisticsApp.Controllers
 
         [HttpPost]
         public IActionResult ChangeLevel(SingleProportionViewModel singleProportionViewModel)
-        {            
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(
+                WwwrootPath + "test_plots");
+            foreach (FileInfo file in directoryInfo.EnumerateFiles())
+            {
+                file.Delete();
+            }
             singleProportionViewModel.AlternativeHypotheses = AlternativeHypotheses;
             singleProportionViewModel.Variables = Variables;
             singleProportionViewModel.Levels = Levels;            
@@ -137,7 +143,7 @@ namespace StatisticsApp.Controllers
             Lines = System.IO.File.ReadAllLines(Dataset);
             Variables = new List<SelectListItem>();
             int counter = 1;
-            foreach (string variable in Lines[0].Split(";").Select(x => x = x.Replace("\"", "")))
+            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
                 Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
                 counter++;
@@ -158,7 +164,7 @@ namespace StatisticsApp.Controllers
                 },
                 out string standardError);
             Levels = new List<SelectListItem>();
-            foreach (string level in levels[0].Split(" ").Skip(1).Select(x => x = x.Replace("\"", "")))
+            foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
                 Levels.Add(new SelectListItem() { Text = level, Value = level });
             };

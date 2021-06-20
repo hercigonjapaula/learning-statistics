@@ -40,10 +40,9 @@ if(test == "mean") {
       test.result$p.value, test.result$conf.int, 
       test.result$estimate, sep = " ")
   ggchisqtest(test.result, colaccept="lightsteelblue1", 
-              colreject="grey84", colstat="navyblue" )
+              colreject="grey84", colstat="navyblue")
   ggsave("test_plot.png", path = path)
 }
-
 #ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
 #  geom_point()
 #ggsave("plot.png", path = plots.path)

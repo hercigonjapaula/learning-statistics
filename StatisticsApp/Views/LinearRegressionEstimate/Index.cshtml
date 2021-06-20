@@ -50,11 +50,11 @@
             <br />
             <form asp-controller="LinearRegressionEstimate" asp-action="ChangeXAndY">
                 <div class="form-group">
-                    <label class="control-label">Varijabla</label>
+                    <label class="control-label">Varijabla X</label>
                     <select asp-for="X" asp-items="@Model.Variables" class="form-control"></select>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Varijabla</label>
+                    <label class="control-label">Varijabla Y</label>
                     <select asp-for="Y" asp-items="@Model.Variables" class="form-control"></select>
                 </div>
                 <div class="form-group">
@@ -105,9 +105,26 @@
             </div>
             <div id="plots-rscript" class="rcode-result">
                 @{
-                    foreach (string line in ViewBag.Result)
+                    if (ViewBag.Result is null)
                     {
-                        <p>@line</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Odsječak</th>
+                                    <th>Nagib</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>                                  
+                                    <td>@ViewBag.Intercept</td>                                 
+                                    <td>@ViewBag.Slope</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        @ViewBag.Result
                     }
                 }
             </div>

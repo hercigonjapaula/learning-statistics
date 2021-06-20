@@ -8,7 +8,7 @@ pdf(NULL)
 path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[2]),sep=";",header = TRUE)
+data <- read.table(as.character(args[2]),sep=",",header = TRUE)
 variable1 <- as.numeric(args[3])
 variable2 <- as.numeric(args[4])
 alternative.hypothesis <- as.character(args[5])
@@ -27,4 +27,4 @@ ggchisqtest(test.result, colaccept="lightsteelblue1",
             colreject="grey84", colstat="navyblue")
 ggsave("test_plot.png", path = paste(path, "test_plots", sep = ""))
 # fisher-irwinov egzaktni test
-test.result <- fisher.test(tbl,alternative = alternative.hypothesis) 
+#test.result <- fisher.test(tbl,alternative = alternative.hypothesis) 

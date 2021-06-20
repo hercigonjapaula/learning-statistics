@@ -118,8 +118,8 @@
                     <table class="table">
                         <thead>
                             <tr class="thead-light">
-                                <th>Broj uspjeha</th>
-                                <th>Broj eksperimenata</th>
+                                <th>Test statistika</th>
+                                <th>Stupnjevi slobode</th>
                                 <th>P-vrijednost</th>
                                 <th>Interval povjerenja</th>
                                 <th>Procjena</th>
@@ -127,8 +127,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@ViewBag.NumOfSucc</td>
-                                <td>@ViewBag.NumOfTrials</td>
+                                <td>@ViewBag.Statistic</td>
+                                <td>@ViewBag.Df</td>
                                 <td>@ViewBag.PValue</td>
                                 <td>@ViewBag.ConfInt</td>
                                 <td>@ViewBag.Estimate</td>

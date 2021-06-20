@@ -8,18 +8,18 @@ pdf(NULL)
 path = args[1]
 
 ## Skup podataka
-data <- read.table(as.character(args[2]), header = TRUE)
+data <- read.table(as.character(args[2]), header = TRUE) 
 alternative.hypothesis <- as.character(args[3])
 confidence.interval <- as.numeric(args[4])
 
 ## Histogrami
 png(file=paste(path, "histogram1.png", sep = "/"))
 hist(data[,1], main = paste(names(data[,1]), "histogram", sep = " "), 
-     xlab = names(data[,1]), ylab = "Frekvencija")
+     xlab = "Prvo mjerenje", ylab = "Frekvencija")
 dev.off()
 png(file=paste(path, "histogram2.png", sep = "/"))
 hist(data[,2], main = paste(names(data[,2]), "histogram", sep = " "),
-     xlab = names(data[,2]), ylab = "Frekvencija")
+     xlab = "Drugo mjerenje", ylab = "Frekvencija")
 dev.off()
 
 ## Test za uparene podatke
