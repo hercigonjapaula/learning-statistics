@@ -13,11 +13,13 @@ x <- as.numeric(args[4])
 y <- as.numeric(args[5])
 
 ## Linearni model
-fit = lm(data[,y] ~ data[,x], data = data)
+fit = lm(cnt ~ temp, data = data)
 
 ## Vrijednosti izlaza za nove podatke
 png(file=paste(path, "linreg_plots/predictedvalues_plot.png", sep = ""))
-plot(data.new[,x], data.new[,y])
+plot(data.new[,x], data.new[,y], 
+     xlab = names(data)[x], ylab = names(data)[y], 
+     main = "Predikcija za nove podatke")
 prediction = predict.lm(fit, data.new, interval = "confidence")
-lines(data.new[,x], prediction[,1])
+lines(data.new[,x], prediction[,1], col = "red")
 dev.off()

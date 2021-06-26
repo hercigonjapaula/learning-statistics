@@ -40,8 +40,19 @@
 <div style="width: 100%">
     <div style="float: left;width: 20%">
         <div class="vertical-menu">
-            <p>Skup podataka: <b>@TempData["dataset_name"].ToString().Replace(".csv", "")</b></p>
-            @{ TempData.Keep("dataset_name"); }
+            <p>
+                Skup podataka: @{
+                    if (TempData.ContainsKey("dataset_linreg_name"))
+                    {
+                        <b>@TempData["dataset_linreg_name"]</b>                        
+                    }
+                    else
+                    {
+                        <b>nije učitan</b>
+                    }
+                    TempData.Keep();
+                }
+            </p>
             <form asp-controller="LinearRegressionInfer" asp-action="ChangeXAndY">
                 <div class="form-group">
                     <label class="control-label">Varijabla</label>
@@ -85,7 +96,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="result" style="display: block">
+        <div id="result" style="display: block;margin-top: 10px">
             <div>
                 @{
                     if (!(ViewBag.Images is null))
@@ -97,11 +108,59 @@
                     }
                 }
             </div>
-            <div id="plots-rscript" class="rcode-result">
+            <div>
                 @{
-                    foreach (string line in ViewBag.Result)
+                    if (ViewBag.Result is null)
                     {
-                        <p>@line</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Procjena</th>
+                                    <th>Standardna pogreška</th>
+                                    <th>T-test statistika</th>
+                                    <th>P-vrijednost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td scope="row"><b>Odsječak</b></td>
+                                    @{
+                                        foreach (var row in ViewBag.TTestIntercept)
+                                        {
+                                            <td>@row</td>
+                                        }
+                                    }
+                                </tr>
+                                <tr>
+                                    <td scope="row"><b>Nagib</b></td>
+                                    @{
+                                        foreach (var row in ViewBag.TTestSlope)
+                                        {
+                                            <td>@row</td>
+                                        }
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table" style="margin-top: 60px">
+                            <thead>
+                                <tr>                                    
+                                    <th>Koeficijent determinacije</th>
+                                    <th>Prilagođeni koeficijent determinacije</th>                                                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@ViewBag.RSquared</td>
+                                    <td>@ViewBag.AdjRSquared</td>
+                                </tr>                           
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        @ViewBag.Result
                     }
                 }
             </div>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,9 +31,9 @@ namespace StatisticsApp.Controllers
             {
                 file.Delete();
             }
-            Dataset = WwwrootPath + TempData["dataset_name"] as string;
+            Dataset = TempData["dataset_linreg_path"] as string;
             Lines = System.IO.File.ReadAllLines(Dataset);
-            TempData.Keep("dataset_name");
+            TempData.Keep();
             Variables = new List<SelectListItem>();
             int counter = 1;
             foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
@@ -47,7 +48,7 @@ namespace StatisticsApp.Controllers
                 Variables = Variables
             };
             ViewBag.Dataset = Lines;
-            ViewBag.Result = new string[] { "Učitajte skup podataka." };
+            ViewBag.Result = "Odaberite varijable X i Y.";
             ViewBag.RCode = RCode;
             return View("Index", linRegInferViewModel);
         }
@@ -57,59 +58,27 @@ namespace StatisticsApp.Controllers
         {
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { WwwrootPath,
-                WwwrootPath + TempData["dataset_name"] as string,                
+                Dataset,                
                 linRegInferViewModel.X,
                 linRegInferViewModel.Y
                 },
                 out string standardError);
-            TempData.Keep("dataset_name");
+            TempData.Keep();
             linRegInferViewModel.Variables = Variables;
-            ViewBag.Result = output;
+            output = output[0].Split(" ");
+            ViewBag.RSquared = output[0];
+            ViewBag.AdjRSquared = output[1];
+            string[] ttest = System.IO.File.ReadAllLines(WwwrootPath + "ttest.txt");
+            Regex regex = new Regex(" +");           
+            ViewBag.TTestIntercept = regex.Split(ttest[1]).Skip(1).ToArray();
+            ViewBag.TTestSlope = regex.Split(ttest[2]).Skip(2).ToArray();
+            string[] ftest = System.IO.File.ReadAllLines(WwwrootPath + "ftest.txt");           
+            ftest = regex.Split(ftest[1]).ToArray();         
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "linreg_plots")
                  .Select(fn => "~/linreg_plots/" + Path.GetFileName(fn));
             ViewBag.RCode = RCode;
             ViewBag.Dataset = Lines;
             return View("Index", linRegInferViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(
-                WwwrootPath + "linreg_plots");
-            foreach (FileInfo f in directoryInfo.EnumerateFiles())
-            {
-                f.Delete();
-            }
-            if (file == null || file.Length == 0)
-            {
-                return Content("File not selected");
-            }
-            var path = Path.Combine(WwwrootPath +
-                    file.FileName);
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            Dataset = WwwrootPath + file.FileName;
-            Lines = System.IO.File.ReadAllLines(Dataset);
-            ViewBag.Dataset = Lines;
-            Variables = new List<SelectListItem>();
-            int counter = 1;
-            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
-            {
-                Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
-                counter++;
-            }
-            LinearRegressionPredictViewModel linRegPredictViewModel = new LinearRegressionPredictViewModel()
-            {
-                X = Variables[0].Text,
-                Y = Variables[0].Text,
-                Variables = Variables
-            };
-            ViewBag.RCode = RCode;
-            ViewBag.Result = ViewBag.Result = new string[] { "Odaberite varijable X i Y." };
-            return View("Index", linRegPredictViewModel);
         }
     }
 }

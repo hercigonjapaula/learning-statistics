@@ -95,7 +95,8 @@ namespace StatisticsApp.Controllers
                 Y = Variables[0].Text,
                 Variables = Variables
             };
-            TempData["dataset_name"] = file.FileName;
+            TempData["dataset_linreg_name"] = file.FileName;
+            TempData["dataset_linreg_path"] = path;
             TempData.Keep();
             ViewBag.RCode = RCode;
             ViewBag.Result = ViewBag.Result = "Odaberite varijable X i Y."; 

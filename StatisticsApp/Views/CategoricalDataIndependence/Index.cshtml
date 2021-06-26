@@ -40,13 +40,18 @@
 <div style="width: 100%">
     <div style="float: left;width: 20%">
         <div class="vertical-menu">
-            <form asp-controller="CategoricalDataIndependence" asp-action="UploadFile" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label class="control-label" style="display: block">Skup podataka</label>
-                    <input type="file" name="file" />
-                </div>
-                <button type="submit" class="btn btn-primary btn-dark">Učitaj</button>
-            </form>
+            <p>Skup podataka: @{ 
+                if (TempData.ContainsKey("dataset_categorical_name"))
+                {
+                    <b>@TempData["dataset_categorical_name"]</b>                   
+                }
+                else
+                {
+                    <b>nije učitan</b>
+                }
+                TempData.Keep();
+            }
+            </p>
             <br />
             <form asp-controller="CategoricalDataIndependence" asp-action="Test">
                 <div class="form-group">
@@ -81,7 +86,7 @@
                             {
                                 <tr>
                                     @{
-                                        foreach (string cell in line.Split(";"))
+                                        foreach (string cell in line.Split(","))
                                         {
                                             <td>
                                                 <center>@cell</center>

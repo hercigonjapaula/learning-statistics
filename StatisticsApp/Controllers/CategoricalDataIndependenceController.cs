@@ -37,17 +37,28 @@ namespace StatisticsApp.Controllers
             foreach (FileInfo file in directoryInfo.EnumerateFiles())
             {
                 file.Delete();
-            }            
+            }
+            Dataset = TempData["dataset_categorical_path"] as string;
+            TempData.Keep();
+            Lines = System.IO.File.ReadAllLines(Dataset);
             Variables1 = new List<SelectListItem>();
             Variables2 = new List<SelectListItem>();
+            int counter = 1;
+            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
+            {
+                Variables1.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
+                Variables2.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
+                counter++;
+            }
+            ViewBag.Dataset = Lines;
             IndependenceViewModel independenceViewModel = new IndependenceViewModel()
             {
-                Variable1 = "",
-                Variable2 = "",
+                Variable1 = Variables1[0].Text,
+                Variable2 = Variables2[0].Text,
                 Variables1 = Variables1,
-                Variables2 = Variables2,               
+                Variables2 = Variables2,
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
-                AlternativeHypotheses = AlternativeHypotheses                
+                AlternativeHypotheses = AlternativeHypotheses
             };
             ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
@@ -64,6 +75,7 @@ namespace StatisticsApp.Controllers
                     independenceViewModel.AlternativeHypothesis
                 },
                 out string standardError);
+            TempData.Keep();
             output = output[0].Trim().Split(" ");
             ViewBag.NumOfSucc = output[0];
             ViewBag.NumOfTrials = output[1];
@@ -90,51 +102,6 @@ namespace StatisticsApp.Controllers
             independenceViewModel.Variables2 = Variables2;           
             independenceViewModel.AlternativeHypotheses = AlternativeHypotheses;
             return View("Index", independenceViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(
-                WwwrootPath + "test_plots");
-            foreach (FileInfo f in directoryInfo.EnumerateFiles())
-            {
-                f.Delete();
-            }
-            if (file == null || file.Length == 0)
-            {
-                return Content("File not selected");
-            }
-            var path = Path.Combine(WwwrootPath +
-                    file.FileName);
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            Dataset = WwwrootPath + file.FileName;
-            Lines = System.IO.File.ReadAllLines(Dataset);
-            Variables1 = new List<SelectListItem>();
-            Variables2 = new List<SelectListItem>();
-            int counter = 1;
-            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
-            {
-                Variables1.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
-                Variables2.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
-                counter++;
-            }
-            ViewBag.Dataset = Lines;
-            IndependenceViewModel independenceViewModel = new IndependenceViewModel()
-            {
-                Variable1 = Variables1[0].Text,
-                Variable2 = Variables2[0].Text,
-                Variables1 = Variables1,
-                Variables2 = Variables2,
-                AlternativeHypothesis = AlternativeHypotheses[0].Text,
-                AlternativeHypotheses = AlternativeHypotheses                
-            };
-            ViewBag.TestResult = "Odaberite parametre testa.";
-            ViewBag.RCode = RCode;
-            return View("Index", independenceViewModel);
-        }
+        }    
     }
 }

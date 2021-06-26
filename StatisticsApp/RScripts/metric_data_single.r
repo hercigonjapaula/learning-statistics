@@ -43,6 +43,3 @@ if(test == "mean") {
               colreject="grey84", colstat="navyblue")
   ggsave("test_plot.png", path = path)
 }
-#ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
-#  geom_point()
-#ggsave("plot.png", path = plots.path)

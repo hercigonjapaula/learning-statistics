@@ -170,6 +170,9 @@ namespace StatisticsApp.Controllers
             };
             singleProportionViewModel.Level = Levels[0].Text;
             singleProportionViewModel.Levels = Levels;
+            TempData["dataset_categorical_name"] = file.FileName;
+            TempData["dataset_categorical_path"] = path;
+            TempData.Keep();
             ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", singleProportionViewModel);

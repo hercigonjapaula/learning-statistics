@@ -14,23 +14,20 @@ y <- as.numeric(args[4])
 ## Linearni model
 fit = lm(data[,y] ~ data[,x], data = data)
 
-## q-q plot reziduala s linijom normalne distribucije
-png(file=paste(path, "linreg_plots/qqplot.png", sep = ""))
-qqnorm(rstandard(fit))
-qqline(rstandard(fit))
-
-## Kolmogorov - Smirnovljev test
-ks.test(rstandard(fit),'pnorm')
-
 ## Statističko zaključivanje
 s <- summary(fit)
 # t-test
-print(paste("T-test: ", s$coefficients, sep = " "))
+sink(paste(path, "ttest.txt", sep = ""))
+print(s$coefficients)
+sink()
 # f-test
-print(paste("F-test: ", s$fstatistic, sep = " "))
+sink(paste(path, "ftest.txt", sep = ""))
+print(s$fstatistic)
+sink()
 
 ## Mjere kvalitete prilagodbe modela podacima
 # koeficijent determinacije
-print(paste("Koeficijent determinacije: ", s$r.squared, sep = " "))
+r.sq <- s$r.squared
 # prilagođeni koeficijent determinacije
-print(paste("Prilagođeni koeficijent determinacije: ", s$adj.r.squared, sep = " "))
+adj.r.sq <- s$adj.r.squared
+cat(r.sq, adj.r.sq, sep = " ")

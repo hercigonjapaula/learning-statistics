@@ -30,12 +30,24 @@ namespace StatisticsApp.Controllers
             {
                 file.Delete();
             }
-            LinearRegressionPredictViewModel linRegPredictViewModel =
-                new LinearRegressionPredictViewModel()
-                {
-                    Variables = new List<SelectListItem>()
-                };
-            ViewBag.Result = new string[] { "Učitajte novi skup podataka." };
+            Dataset = TempData["dataset_linreg_path"] as string;
+            Lines = System.IO.File.ReadAllLines(Dataset);
+            TempData.Keep();
+            Variables = new List<SelectListItem>();
+            int counter = 1;
+            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
+            {
+                Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
+                counter++;
+            }
+            LinearRegressionPredictViewModel linRegPredictViewModel = new LinearRegressionPredictViewModel()
+            {
+                X = Variables[0].Text,
+                Y = Variables[0].Text,
+                Variables = Variables
+            };
+            ViewBag.Dataset = Lines;
+            ViewBag.Result = "Odaberite varijable X i Y.";
             ViewBag.RCode = RCode;
             return View("Index", linRegPredictViewModel);
         }
@@ -45,13 +57,13 @@ namespace StatisticsApp.Controllers
         {
             string[] output = CSharpR.ExecuteRScript(RScriptPath,
                 new string[] { WwwrootPath,
-                WwwrootPath + TempData["dataset_name"] as string,
+                Dataset,
                 DatasetNew,
                 linRegPredictViewModel.X,
                 linRegPredictViewModel.Y
                 },
                 out string standardError);
-            TempData.Keep("dataset_name");
+            TempData.Keep();
             linRegPredictViewModel.Variables = Variables;
             ViewBag.Result = output.SkipLast(2);
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "linreg_plots")
@@ -97,7 +109,7 @@ namespace StatisticsApp.Controllers
                 Variables = Variables
             };
             ViewBag.RCode = RCode;
-            ViewBag.Result = ViewBag.Result = new string[] { "Odaberite varijable X i Y." };
+            ViewBag.Result = ViewBag.Result = "Odaberite varijable X i Y.";
             return View("Index", linRegPredictViewModel);
         }
     }

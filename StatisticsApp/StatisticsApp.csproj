@@ -5,6 +5,20 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="RScripts\basics.r" />
+    <Content Include="RScripts\categorical_data_compare_proportions.r" />
+    <Content Include="RScripts\categorical_data_independence.r" />
+    <Content Include="RScripts\categorical_data_single_proportion.r" />
+    <Content Include="RScripts\levels.r" />
+    <Content Include="RScripts\linear_regression_estimate.r" />
+    <Content Include="RScripts\linear_regression_infer.r" />
+    <Content Include="RScripts\linear_regression_predict.r" />
+    <Content Include="RScripts\metric_data_compare.r" />
+    <Content Include="RScripts\metric_data_paired.r" />
+    <Content Include="RScripts\metric_data_single.r" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -15,6 +29,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Docs\" />
     <Folder Include="wwwroot\basic_plots\" />
     <Folder Include="wwwroot\linreg_plots\" />
     <Folder Include="wwwroot\test_plots\" />

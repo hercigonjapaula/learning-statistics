@@ -40,8 +40,19 @@
 <div style="width: 100%">
     <div style="float: left;width: 20%">
         <div class="vertical-menu">
-            <p>Skup podataka: <b>@TempData["dataset_name"].ToString().Replace(".csv", "")</b></p>
-            @{ TempData.Keep("dataset_name"); }
+            <p>
+                Skup podataka: @{
+                    if (TempData.ContainsKey("dataset_linreg_name"))
+                    {
+                        <b>@TempData["dataset_linreg_name"]</b>                      
+                    }
+                    else
+                    {
+                        <b>nije učitan</b>
+                    }
+                    TempData.Keep();
+                }
+            </p>
             <form asp-controller="LinearRegressionPredict" asp-action="UploadFile" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="control-label" style="display: block">Novi skup podataka</label>
@@ -107,9 +118,9 @@
             </div>
             <div id="plots-rscript" class="rcode-result">
                 @{
-                    foreach (string line in ViewBag.Result)
+                    if(!(ViewBag.Result is null))
                     {
-                        <p>@line</p>
+                        @ViewBag.Result
                     }
                 }
             </div>

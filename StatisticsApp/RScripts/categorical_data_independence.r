@@ -26,5 +26,3 @@ cat(test.result$statistic, test.result$parameter,
 ggchisqtest(test.result, colaccept="lightsteelblue1", 
             colreject="grey84", colstat="navyblue")
 ggsave("test_plot.png", path = paste(path, "test_plots", sep = ""))
-# fisher-irwinov egzaktni test
-#test.result <- fisher.test(tbl,alternative = alternative.hypothesis) 

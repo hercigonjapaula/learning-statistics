@@ -42,11 +42,41 @@ namespace StatisticsApp.Controllers
             {
                 file.Delete();
             }
+            Dataset = TempData["dataset_categorical_path"] as string;
+            TempData.Keep();
+            Lines = System.IO.File.ReadAllLines(Dataset);
+            Variables = new List<SelectListItem>();
+            int counter = 1;
+            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
+            {
+                Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
+                counter++;
+            }
+            ViewBag.Dataset = Lines;
             CompareProportionsViewModel compareProportionsViewModel = new CompareProportionsViewModel()
-            {                
+            {
+                Variable1 = Variables[0].Text,
+                Variable2 = Variables[0].Text,
+                Variables = Variables,
                 AlternativeHypothesis = AlternativeHypotheses[0].Text,
-                AlternativeHypotheses = AlternativeHypotheses               
+                AlternativeHypotheses = AlternativeHypotheses
             };
+            string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
+                new string[] { Dataset,
+                compareProportionsViewModel.Variables[0].Value
+                },
+                out string standardError);
+            TempData.Keep();
+            Levels1 = new List<SelectListItem>();
+            foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
+            {
+                Levels1.Add(new SelectListItem() { Text = level, Value = level });
+            };
+            compareProportionsViewModel.Level1 = Levels1[0].Text;
+            compareProportionsViewModel.Level21 = Levels1[0].Text;
+            compareProportionsViewModel.Level22 = Levels1[0].Text;
+            compareProportionsViewModel.Levels1 = Levels1;
+            compareProportionsViewModel.Levels2 = Levels1;
             ViewBag.TestResult = "Odaberite parametre testa.";
             ViewBag.RCode = RCode;
             return View("Index", compareProportionsViewModel);
@@ -68,6 +98,7 @@ namespace StatisticsApp.Controllers
                 compareProportionsViewModel.Variable1
                 },
                 out string standardError);
+            TempData.Keep();
             Levels1 = new List<SelectListItem>();
             foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
@@ -78,6 +109,7 @@ namespace StatisticsApp.Controllers
                 compareProportionsViewModel.Variable2
                 },
                 out string stdErr);
+            TempData.Keep();
             Levels2 = new List<SelectListItem>();
             foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
             {
@@ -121,6 +153,7 @@ namespace StatisticsApp.Controllers
                 compareProportionsViewModel.AlternativeHypothesis                
                 },
                 out string standardError);
+            TempData.Keep();
             output = output[0].Trim().Split(" ");
             ViewBag.Statistic = output[0];
             ViewBag.Df = output[1];
@@ -131,63 +164,6 @@ namespace StatisticsApp.Controllers
             ViewBag.Dataset = Lines;
             ViewBag.Images = Directory.EnumerateFiles(WwwrootPath + "test_plots")
                  .Select(fn => "~/test_plots/" + Path.GetFileName(fn));
-            return View("Index", compareProportionsViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(
-                WwwrootPath + "test_plots");
-            foreach (FileInfo f in directoryInfo.EnumerateFiles())
-            {
-                f.Delete();
-            }
-            if (file == null || file.Length == 0)
-            {
-                return Content("File not selected");
-            }
-            var path = Path.Combine(WwwrootPath +
-                    file.FileName);
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            Dataset = WwwrootPath + file.FileName;
-            Lines = System.IO.File.ReadAllLines(Dataset);
-            Variables = new List<SelectListItem>();
-            int counter = 1;
-            foreach (string variable in Lines[0].Split(",").Select(x => x = x.Replace("\"", "")))
-            {
-                Variables.Add(new SelectListItem() { Text = variable, Value = counter.ToString() });
-                counter++;
-            }
-            ViewBag.Dataset = Lines;
-            CompareProportionsViewModel compareProportionsViewModel = new CompareProportionsViewModel()
-            {                
-                Variable1 = Variables[0].Text,
-                Variable2 = Variables[0].Text,
-                Variables = Variables,
-                AlternativeHypothesis = AlternativeHypotheses[0].Text,
-                AlternativeHypotheses = AlternativeHypotheses                
-            };
-            string[] levels = CSharpR.ExecuteRScript(RScriptLevelsPath,
-                new string[] { Dataset,
-                compareProportionsViewModel.Variables[0].Value
-                },
-                out string standardError);
-            Levels1 = new List<SelectListItem>();
-            foreach (string level in levels[0].Split(",").Select(x => x = x.Replace("\"", "")))
-            {
-                Levels1.Add(new SelectListItem() { Text = level, Value = level });
-            };
-            compareProportionsViewModel.Level1 = Levels1[0].Text;
-            compareProportionsViewModel.Level21 = Levels1[0].Text;
-            compareProportionsViewModel.Level22 = Levels1[0].Text;
-            compareProportionsViewModel.Levels1 = Levels1;
-            compareProportionsViewModel.Levels2 = Levels1;
-            ViewBag.TestResult = "Odaberite parametre testa.";
-            ViewBag.RCode = RCode;
             return View("Index", compareProportionsViewModel);
         }
     }

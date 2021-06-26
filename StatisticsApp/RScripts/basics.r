@@ -94,3 +94,7 @@ cat(paste(mean, median, mfv,
             first.quartile, third.quartile, 
             sep = " "))
 sink()
+
+#ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
+#  geom_point()
+#ggsave("plot.png", path = plots.path)

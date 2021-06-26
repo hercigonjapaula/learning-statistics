@@ -17,7 +17,9 @@ cat(fit$coefficients, " ")
 
 ## Plot podataka
 png(file=paste(path, "fittedvalues_plot.png", sep = "/"))
-plot(data[,x], data[,y], xlab = names(data)[x], ylab = names(data)[y])
+plot(data[,x], data[,y], 
+     xlab = names(data)[x], ylab = names(data)[y],
+     main = "Model linearne regresije")
 ## Plot fitanih vrijednosti
 lines(data[,x], fit$fitted.values, col='red')
 dev.off()
